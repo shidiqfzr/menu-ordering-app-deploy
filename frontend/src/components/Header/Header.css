@@ -1,0 +1,113 @@
+.carousel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width */
+  max-width: 1200px; /* Max width to match image dimensions */
+  margin: 0 auto; /* Center carousel */
+  overflow: hidden; /* Hide overflow for a cleaner look */
+  border-radius: 0.5rem; /* Rounded corners */
+  margin-top: 40px;
+}
+
+.slide {
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.3); /* Softer shadow */
+  width: 100%; /* Full width */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 628px; /* Maintain height of images */
+  object-fit: cover; /* Cover the area without distortion */
+}
+
+.slide-hidden {
+  display: none; /* Hide non-active slides */
+}
+
+.arrow {
+  position: absolute;
+  filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.arrow:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.arrow-left {
+  left: 1rem; /* Adjust positioning */
+}
+
+.arrow-right {
+  right: 1rem; /* Adjust positioning */
+}
+
+.indicators {
+  display: flex;
+  position: absolute;
+  bottom: 1rem; /* Adjust position */
+}
+
+.indicator {
+  background-color: white;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 100%;
+  border: none;
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  margin: 0 0.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.indicator-inactive {
+  background-color: grey; /* Inactive state */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .carousel {
+    height: 250px; /* Reduce height for smaller screens */
+    border-radius: 0.3rem; /* Slightly smaller radius */
+    margin-top: 0px;
+  }
+
+  .slide {
+    max-height: 200px; /* Maintain aspect ratio */
+  }
+
+  .arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .indicators {
+    bottom: 0.5rem;
+  }
+
+  .indicator {
+    height: 0.4rem;
+    width: 0.4rem;
+  }
+}
+
+/* Additional mobile styles */
+@media (max-width: 400px) {
+  .arrow {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .carousel {
+    height: 220px; /* Further reduce height for small screens */
+  }
+
+  .slide {
+    max-height: 180px; /* Maintain aspect ratio */
+  }
+}
