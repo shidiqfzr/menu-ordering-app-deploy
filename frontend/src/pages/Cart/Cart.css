@@ -1,0 +1,306 @@
+.cart {
+  margin-top: 60px;
+}
+
+.cart-items-title {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+  align-items: center;
+  color: grey;
+  font-size: max(1vw, 12px);
+}
+
+.cart-items-item {
+  margin: 1px 0px;
+  color: black;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+  align-items: center;
+}
+
+.cart-items-item img {
+  width: 60px;
+}
+
+.cart-items-item .item-quantity {
+  padding: 0 22px;
+}
+
+.cart hr {
+  height: 1px;
+  background-color: #e2e2e2;
+  border: none;
+}
+
+.cart-items-item .cross {
+  cursor: pointer;
+  font-size: 18px;
+  color: red;
+  font-weight: bold;
+  padding: 0 20px;
+}
+
+.cart-bottom-left {
+  flex: 1;
+  max-width: 600px;  
+}
+
+.cart-bottom {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  gap: max(12vw, 20px);
+}
+
+.cart-total h2 {
+    padding-bottom: 8px;
+}
+
+.customer-info h2 {
+  padding-bottom: 20px;
+}
+
+.customer-info {
+  width: 100%;
+  max-width: max(30%, 500px);
+}
+
+.customer-info .title {
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.customer-info label {
+  font-size: 16px;       
+  font-weight: 500;      
+  color: tomato;           
+  margin-bottom: 5px;   
+  display: block;        
+}
+
+.customer-info input {
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #c5c5c5;
+  border-radius: 4px;
+  outline-color: tomato;
+  appearance: none; /* Remove default dropdown icon */
+  position: relative;
+}
+
+.customer-info select {
+  background: url("data:image/svg+xml,%3Csvg width='10' height='5' viewBox='0 0 10 5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 5 5-5H0z' fill='%23c5c5c5'/%3E%3C/svg%3E") no-repeat right 10px center;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #c5c5c5;
+  border-radius: 4px;
+  outline-color: tomato;
+  appearance: none; /* Remove default dropdown icon */
+  position: relative;
+}
+
+.customer-info select:hover,
+.customer-info select:focus {
+  border-color: #ff6347; /* Change border color on hover and focus */
+}
+
+/* Adjust option padding for better visibility */
+.customer-info select option {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.customer-info .multi-fields {
+  gap: 10px;
+}
+
+.cart-promocode {
+  flex: 1;
+}
+
+.cart-promocode h2 {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.cart-promocode p {
+  color: #555;
+}
+
+.cart-promocode-input {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+
+.cart-promocode-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+}
+
+.cart-promocode-input button {
+  width: max(10vw, 150px);
+  padding: 12px 5px;
+  background-color: black;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cart-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-total-details {
+  display: flex;
+  justify-content: space-between;
+  color: #555;
+}
+
+.cart-total hr {
+  margin: 10px 0px;
+}
+
+.cart-total button {
+  border: none;
+  color: white;
+  background-color: tomato;
+  width: max(15vw, 200px);
+  padding: 12px 0px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* Media query for tablet devices */
+@media (max-width: 768px) {
+  .cart-items-title {
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr; /* Adjust grid layout for smaller screens */
+    font-size: 10px; /* Smaller font size */
+  }
+
+  .cart-items-item img {
+    width: 40px; /* Smaller image size */
+  }
+
+  .cart-items-item {
+    font-size: 12px; /* Smaller font for items */
+  }
+
+  .cart-bottom {
+    flex-direction: column;
+    gap: 40px; /* Adjust layout for smaller screens */
+  }
+
+  .cart-total button {
+    width: 100%; /* Full-width button */
+    padding: 15px 0px; /* Larger padding for better tap targets */
+  }
+
+  .cart {
+    margin-top: 60px; /* Adjust top margin */
+  }
+
+  .cart-items-title,
+  .cart-items-item {
+    grid-template-columns: repeat(
+      6,
+      1fr
+    ); /* Make columns even for better layout */
+  }
+
+  .cart-items-title p,
+  .cart-items-item p {
+    font-size: 10px; /* Smaller text for items */
+  }
+
+  .customer-info label {
+    font-size: 14px;       
+    font-weight: 500;      
+    color: tomato;           
+    margin-bottom: 5px;   
+    display: block;        
+  }
+}
+
+/* Media query for mobile devices (hides image and "Items" title) */
+@media (max-width: 480px) {
+  .cart-items-title {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr; /* Adjust grid structure to align with items */
+    font-size: 10px; /* Adjust font size for readability */
+    text-align: left;
+    align-items: center; /* Center content vertically */
+    gap: 0; /* Ensure no gap between columns */
+  }
+
+  .cart-items-item {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr; /* Match grid structure for consistency */
+    font-size: 10px; /* Ensure consistent font size */
+    gap: 0; /* Remove any gap to ensure columns match */
+    align-items: center; /* Vertically align items */
+    padding: 5px 0; /* Add padding for more consistent spacing */
+  }
+
+  .cart-items-item .item-quantity {
+    padding: 0 15px;
+  }
+
+  .cart-items-item img,
+  .cart-items-title p:first-child {
+    display: none; /* Hide the image and "Items" column */
+  }
+
+  .cart-items-item p {
+    padding: 5px 0; /* Add padding for vertical spacing */
+  }
+
+  .cart-items-item .cross {
+    font-size: 15px;
+    padding: 0 10px;
+  }
+
+  .cart-promocode {
+    font-size: 14px; 
+  }
+
+  .customer-info, .cart-promocode, .cart-total {
+    font-size: 14px; 
+  }
+
+  .cart-total button {
+    font-size: 14px; /* Button text size for small screens */
+    width: 100%; /* Full width for better layout */
+    padding: 12px 0; /* Better padding for taps */
+  }
+
+  .cart {
+    margin-top: 30px;
+  }
+
+  .small-swal-popup {
+    width: 300px;
+    padding: 10px;
+  }
+  
+  .small-swal-title {
+    font-size: 16px;
+  }
+  
+  .small-swal-content {
+    font-size: 14px;
+  }
+}
