@@ -22,7 +22,7 @@ connectDB();
 
 // API endpoints
 app.use("/api/food", foodRouter);
-app.use("/images", express.static('uploads')); // Ensure 'uploads' is included in your deployment
+// app.use("/images", express.static('uploads')); // Ensure 'uploads' is included in your deployment
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
