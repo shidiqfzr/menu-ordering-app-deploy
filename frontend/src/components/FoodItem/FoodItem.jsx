@@ -18,16 +18,26 @@ const formatCurrency = (amount) => {
 };
 
 const FoodItem = ({ id, name, price, description, image }) => {
-    const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext);
+    const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
     const [showToast, setShowToast] = useState(false);
     const navigate = useNavigate();
 
-    // Calculate total items in the cart
     const totalCartItems = Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
 
-    const handleAddToCart = () => {
+    const handleAddToCartFromImage = (e) => {
+        e.stopPropagation(); // Prevents bubbling up to other click handlers
         addToCart(id);
-        setShowToast(true); 
+        setShowToast(true);
+    };
+
+    const handleRemoveFromCart = (e) => {
+        e.stopPropagation(); // Prevents bubbling up to the card click handler
+        removeFromCart(id);
+    };
+
+    const handleAddMoreToCart = (e) => {
+        e.stopPropagation(); // Prevents bubbling up to the card click handler
+        addToCart(id);
     };
 
     const handleNavigateToCart = () => {
@@ -35,17 +45,40 @@ const FoodItem = ({ id, name, price, description, image }) => {
     };
 
     return (
-        <div className='food-item'>
+        <div className="food-item">
             <div className="food-item-img-container">
-                <img className='food-item-image' src={image} alt={name}  />
-                {!cartItems[id]
-                    ? <img className='add' onClick={handleAddToCart} src={assets.add_icon_white} alt="Add to cart" />
-                    : <div className='food-item-counter'>
-                        <img onClick={() => removeFromCart(id)} src={assets.remove_icon_red} alt="Remove from cart" />
+                <img
+                    className="food-item-image"
+                    src={image}
+                    alt={name}
+                    onClick={handleAddToCartFromImage} // Add to cart when image is clicked
+                />
+                {!cartItems[id] ? (
+                    <img
+                        className="add"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(id);
+                            setShowToast(true);
+                        }}
+                        src={assets.add_icon_white}
+                        alt="Add to cart"
+                    />
+                ) : (
+                    <div className="food-item-counter">
+                        <img
+                            onClick={handleRemoveFromCart}
+                            src={assets.remove_icon_red}
+                            alt="Remove from cart"
+                        />
                         <p>{cartItems[id]}</p>
-                        <img onClick={handleAddToCart} src={assets.add_icon_green} alt="Add more to cart" />
+                        <img
+                            onClick={handleAddMoreToCart}
+                            src={assets.add_icon_green}
+                            alt="Add more to cart"
+                        />
                     </div>
-                }
+                )}
             </div>
             <div className="food-item-info">
                 <div className="food-item-name-rating">
@@ -56,7 +89,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
                 <p className="food-item-price">{formatCurrency(price)}</p>
             </div>
             {showToast && <Toast message={`Menu telah ditambahkan ke keranjang`} onClose={() => setShowToast(false)} />}
-            
+
             {/* Floating action button with item count */}
             <Fab
                 color="primary"
@@ -76,8 +109,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
                     zIndex: 1000,
                 }}
             >
-                <Badge 
-                badgeContent={totalCartItems} color="error">
+                <Badge badgeContent={totalCartItems} color="error">
                     <ShoppingCartIcon />
                 </Badge>
             </Fab>

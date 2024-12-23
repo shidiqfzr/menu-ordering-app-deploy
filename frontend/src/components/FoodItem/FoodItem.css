@@ -48,8 +48,12 @@
     position: relative;
 }
 
+.food-item-img-container img {
+    cursor: pointer; 
+}
+
 .food-item-img-container .add{
-    width: 50px;
+    width: 45px;
     position: absolute;
     bottom: 15px;
     right: 15px;
