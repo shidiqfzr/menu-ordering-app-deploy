@@ -14,6 +14,16 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
+// Function to determine the priority of statuses
+const getStatusPriority = (status) => {
+  const priority = {
+    Diproses: 1,
+    Selesai: 2,
+    // Add more statuses if needed with increasing priority values
+  };
+  return priority[status] || 99; // Default to lowest priority if status is not defined
+};
+
 const MyOrders = () => {
   const { url, token } = useContext(StoreContext);
   const [data, setData] = useState([]);
@@ -36,10 +46,14 @@ const MyOrders = () => {
         (order) => order.status !== "Pending"
       );
 
-      // Sort orders by date in descending order (newest first)
-      const sortedData = filteredOrders.sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      );
+      // Sort orders first by status priority, then by date (newest first)
+      const sortedData = filteredOrders.sort((a, b) => {
+        const statusDiff = getStatusPriority(a.status) - getStatusPriority(b.status);
+        if (statusDiff === 0) {
+          return new Date(b.date) - new Date(a.date);
+        }
+        return statusDiff;
+      });
 
       setData(sortedData);
       setFilteredData(sortedData);
@@ -60,7 +74,17 @@ const MyOrders = () => {
         const orderDate = new Date(order.date);
         return orderDate >= start && orderDate <= end;
       });
-      setFilteredData(filtered);
+
+      // Sort the filtered data by status priority and date
+      const sortedFilteredData = filtered.sort((a, b) => {
+        const statusDiff = getStatusPriority(a.status) - getStatusPriority(b.status);
+        if (statusDiff === 0) {
+          return new Date(b.date) - new Date(a.date);
+        }
+        return statusDiff;
+      });
+
+      setFilteredData(sortedFilteredData);
     } else {
       setFilteredData(data); // Show all if no date range is selected
     }
