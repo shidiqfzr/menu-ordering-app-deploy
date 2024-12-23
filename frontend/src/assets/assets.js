@@ -139,7 +139,7 @@ export const food_list = [
         name: "Greek Salad",
         image: food_1,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Salad segar dengan campuran sayuran khas, dilengkapi dengan saus yang nikmat",
         category: "Salad"
     },
     {
@@ -147,77 +147,77 @@ export const food_list = [
         name: "Veg Salad",
         image: food_2,
         price: formatPrice(18000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Salad sehat dengan berbagai macam sayuran segar, cocok untuk pencinta makanan vegetarian",
         category: "Salad"
     }, {
         _id: "3",
         name: "Clover Salad",
         image: food_3,
         price: formatPrice(16000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Salad segar dengan kombinasi bahan alami dan saus lezat yang menambah cita rasa",
         category: "Salad"
     }, {
         _id: "4",
         name: "Chicken Salad",
         image: food_4,
         price: formatPrice(24000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Salad ayam panggang yang lezat, dipadu dengan sayuran segar dan saus pilihan",
         category: "Salad"
     }, {
         _id: "5",
         name: "Lasagna Rolls",
         image: food_5,
         price: formatPrice(14000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Gulungan lasagna dengan isian daging dan keju yang melimpah, sempurna untuk dinikmati",
         category: "Rolls"
     }, {
         _id: "6",
         name: "Peri Peri Rolls",
         image: food_6,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Gulungan roti dengan isi daging dan saus peri-peri yang pedas dan menggugah selera",
         category: "Rolls"
     }, {
         _id: "7",
         name: "Chicken Rolls",
         image: food_7,
         price: formatPrice(20000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Gulungan roti dengan isian ayam yang lembut dan rasa yang nikmat",
         category: "Rolls"
     }, {
         _id: "8",
         name: "Veg Rolls",
         image: food_8,
         price: formatPrice(15000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Gulungan roti dengan isian sayuran segar dan saus yang lezat, cocok untuk vegetarian",
         category: "Rolls"
     }, {
         _id: "9",
         name: "Ripple Ice Cream",
         image: food_9,
         price: formatPrice(14000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Es krim dengan lapisan rasa yang berkelok, memberikan sensasi dingin yang menyegarkan",
         category: "Deserts"
     }, {
         _id: "10",
         name: "Fruit Ice Cream",
         image: food_10,
         price: formatPrice(22000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Es krim buah yang menyegarkan, dengan rasa buah alami yang manis dan lezat",
         category: "Deserts"
     }, {
         _id: "11",
         name: "Jar Ice Cream",
         image: food_11,
         price: formatPrice(10000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Es krim dalam kemasan jar yang praktis, memberikan kenikmatan setiap sendoknya",
         category: "Deserts"
     }, {
         _id: "12",
         name: "Vanilla Ice Cream",
         image: food_12,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Es krim vanilla klasik dengan rasa lembut yang memanjakan lidah",
         category: "Deserts"
     },
     {
@@ -225,7 +225,7 @@ export const food_list = [
         name: "Chicken Sandwich",
         image: food_13,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Sandwich isi ayam panggang dengan roti lembut dan bahan segar",
         category: "Sandwich"
     },
     {
@@ -233,77 +233,77 @@ export const food_list = [
         name: "Vegan Sandwich",
         image: food_14,
         price: formatPrice(18000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Sandwich dengan isian sayuran segar yang cocok untuk vegetarian",
         category: "Sandwich"
     }, {
         _id: "15",
         name: "Grilled Sandwich",
         image: food_15,
         price: formatPrice(16000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Sandwich panggang yang kaya rasa, dengan isian lezat dan roti renyah",
         category: "Sandwich"
     }, {
         _id: "16",
         name: "Bread Sandwich",
         image: food_16,
         price: formatPrice(24000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Sandwich sederhana dengan roti segar dan isian yang menggugah selera",
         category: "Sandwich"
     }, {
         _id: "17",
         name: "Cup Cake",
         image: food_17,
         price: formatPrice(14000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Kue cupcake manis dengan tekstur lembut dan topping yang menggoda",
         category: "Cake"
     }, {
         _id: "18",
         name: "Vegan Cake",
         image: food_18,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Kue vegan yang dibuat tanpa bahan hewani, nikmat dan cocok untuk pencinta makanan nabati",
         category: "Cake"
     }, {
         _id: "19",
         name: "Butterscotch Cake",
         image: food_19,
         price: formatPrice(20000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Kue butterscotch dengan rasa manis-karamel yang sempurna",
         category: "Cake"
     }, {
         _id: "20",
         name: "Sliced Cake",
         image: food_20,
         price: formatPrice(15000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Kue irisan dengan rasa manis dan tekstur lembut, cocok untuk camilan",
         category: "Cake"
     }, {
         _id: "21",
         name: "Garlic Mushroom",
         image: food_21,
         price: formatPrice(14000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Jamur bawang putih yang gurih dan lezat, cocok sebagai hidangan sampingan",
         category: "Pure Veg"
     }, {
         _id: "22",
         name: "Fried Cauliflower",
         image: food_22,
         price: formatPrice(22000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Kembang kol goreng dengan rasa renyah dan bumbu yang menggugah selera",
         category: "Pure Veg"
     }, {
         _id: "23",
         name: "Mix Veg Pulao",
         image: food_23,
         price: formatPrice(10000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Nasi pulao campur sayuran yang kaya rasa dan harum",
         category: "Pure Veg"
     }, {
         _id: "24",
         name: "Rice Zucchini",
         image: food_24,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Nasi dengan zucchini segar yang penuh rasa dan menyehatkan",
         category: "Pure Veg"
     },
     {
@@ -311,7 +311,7 @@ export const food_list = [
         name: "Cheese Pasta",
         image: food_25,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Pasta dengan saus keju yang creamy, sempurna untuk penggemar keju",
         category: "Pasta"
     },
     {
@@ -319,49 +319,49 @@ export const food_list = [
         name: "Tomato Pasta",
         image: food_26,
         price: formatPrice(18000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Pasta dengan saus tomat segar yang manis, asam, dan lezat",
         category: "Pasta"
     }, {
         _id: "27",
         name: "Creamy Pasta",
         image: food_27,
         price: formatPrice(16000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Pasta dengan saus krim lembut yang kaya rasa, cocok untuk pencinta pasta",
         category: "Pasta"
     }, {
         _id: "28",
         name: "Chicken Pasta",
         image: food_28,
         price: formatPrice(24000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Pasta dengan potongan ayam dan saus yang gurih, menyajikan kenikmatan yang tak terlupakan",
         category: "Pasta"
     }, {
         _id: "29",
         name: "Buttter Noodles",
         image: food_29,
         price: formatPrice(14000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Mie mentega yang sederhana namun lezat, cocok untuk hidangan cepat",
         category: "Noodles"
     }, {
         _id: "30",
         name: "Veg Noodles",
         image: food_30,
         price: formatPrice(12000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Mie sayuran segar dengan bumbu ringan yang cocok untuk vegetarian",
         category: "Noodles"
     }, {
         _id: "31",
         name: "Somen Noodles",
         image: food_31,
         price: formatPrice(20000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Mie somen yang lembut, disajikan dengan bumbu segar dan nikmat",
         category: "Noodles"
     }, {
         _id: "32",
         name: "Cooked Noodles",
         image: food_32,
         price: formatPrice(15000),
-        description: "Food provides essential nutrients for overall health and well-being",
+        description: "Mie yang dimasak dengan sempurna, disajikan dengan bumbu lezat",
         category: "Noodles"
     }
 ]

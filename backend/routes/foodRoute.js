@@ -1,15 +1,15 @@
 import express from "express";
-import { addFood, listFood, removeFood } from "../controllers/foodController.js";
-import multer from "multer";
+import { addFood, listFood, removeFood, upload } from "../controllers/foodController.js";
 
 const foodRouter = express.Router();
 
-// Use in-memory storage for uploaded images
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
+// Add a food item with an image upload
 foodRouter.post("/add", upload.single("image"), addFood);
+
+// List all food items
 foodRouter.get("/list", listFood);
+
+// Remove a food item
 foodRouter.post("/remove", removeFood);
 
 export default foodRouter;

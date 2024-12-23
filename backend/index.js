@@ -9,20 +9,24 @@ import 'dotenv/config';
 
 // App config
 const app = express();
-const port = process.env.PORT || 4000; // Default to 3000 if PORT is not set
+const port = process.env.PORT || 4000; // Default to 4000 if PORT is not set
+
+// CORS setup based on environment
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? "https://menu-ordering-app-deploy-frontend.vercel.app"  // Production frontend URL
+    : "http://localhost:5173"  // Local development URL
+};
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-    origin: "https://menu-ordering-app-deploy-frontend.vercel.app" // Restrict to frontend domain
-}));
+app.use(cors(corsOptions));
 
 // DB connection
 connectDB();
 
 // API endpoints
 app.use("/api/food", foodRouter);
-// app.use("/images", express.static('uploads')); // Ensure 'uploads' is included in your deployment
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
