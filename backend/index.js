@@ -14,7 +14,7 @@ const port = process.env.PORT || 4000; // Default to 4000 if PORT is not set
 // CORS setup based on environment
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? "https://menu-ordering-app-deploy-frontend.vercel.app"  // Production frontend URL
+    ? "https://bujang-cafe.vercel.app"  // Production frontend URL
     : "http://localhost:5173"  // Local development URL
 };
 
