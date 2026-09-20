@@ -12,12 +12,17 @@ try {
   console.warn("Could not set custom DNS servers:", e);
 }
 
+let isConnected = false;
+
 export const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1 || isConnected) {
+    return;
+  }
   try {
-    await mongoose.connect(process.env.MONGODB);
+    const db = await mongoose.connect(process.env.MONGODB);
+    isConnected = db.connections[0].readyState >= 1;
     console.log("DB Connected");
   } catch (error) {
     console.error("DB connection error:", error);
-    process.exit(1); // Exit process with failure
   }
 };

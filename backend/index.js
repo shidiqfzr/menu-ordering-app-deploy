@@ -78,8 +78,16 @@ app.set("io", io);
 app.use(express.json());
 app.use(cors(corsOptions));
 
-// DB connection
-connectDB();
+// Ensure DB connection before handling requests (crucial for serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("DB connection error in request:", err);
+    res.status(500).json({ success: false, message: "Database connection failed" });
+  }
+});
 
 // API endpoints
 app.use("/api/food", foodRouter);
