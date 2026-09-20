@@ -18,8 +18,16 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: { type: String, required: true },
     status: { type: String, default: "Diproses" },      // Pending, Diproses, Selesai
     date: { type: Date, default: Date.now },
-    payment: { type: Boolean, default: false }
+    payment: { type: Boolean, default: false },
+    cashReceived: { type: Number, default: 0 },
+    change: { type: Number, default: 0 }
 });
+
+// High-performance query indexes
+orderSchema.index({ date: -1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ tableNumber: 1 });
+orderSchema.index({ status: 1, date: -1 });
 
 // Method to get the order date in Indonesian time
 orderSchema.methods.getIndonesianDate = function () {

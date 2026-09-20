@@ -1,0 +1,220 @@
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px;
+  background-color: #ffffff;
+  border-right: 1px solid var(--border-light, #ededed);
+  padding: 24px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 65px);
+  position: sticky;
+  top: 65px;
+  align-self: flex-start;
+  flex-shrink: 0;
+  overflow-y: auto;
+  z-index: 90;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+}
+
+/* Custom subtle scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.sidebar-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 0 12px 6px;
+  margin-bottom: 2px;
+}
+
+.sidebar-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-md, 12px);
+  cursor: pointer;
+  color: var(--text-secondary, #475569);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+
+.sidebar-option:hover {
+  background-color: var(--primary-light, #fff4f2);
+  color: var(--primary-color, tomato);
+  transform: translateX(3px);
+}
+
+.sidebar-option.active {
+  background-color: var(--primary-light, #fff4f2);
+  color: var(--primary-color, tomato);
+  font-weight: 600;
+  border-left-color: var(--primary-color, tomato);
+}
+
+.sidebar-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.sidebar-text {
+  flex: 1;
+}
+
+/* ── Live Badge on Orders ── */
+.sidebar-badge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.2;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+  animation: pulse-subtle 2.5s infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* ── Operational Cafe Status Card at Bottom ── */
+.sidebar-status-card {
+  margin-top: auto;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.sidebar-status-card:hover {
+  border-color: #cbd5e1;
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.online {
+  background-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.status-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.status-desc {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* ── Responsiveness ── */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 200px;
+    padding: 16px 8px;
+  }
+  .sidebar-option {
+    padding: 10px 10px;
+    font-size: 13px;
+    gap: 8px;
+  }
+  .sidebar-status-card {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light, #ededed);
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 8px 12px;
+    gap: 8px;
+    box-shadow: none;
+  }
+  .sidebar-menu-group {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    gap: 8px;
+  }
+  .sidebar-group-title,
+  .sidebar-status-card {
+    display: none;
+  }
+  .sidebar-option {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm, 6px);
+  }
+  .sidebar-option.active {
+    border-bottom-color: var(--primary-color, tomato);
+    border-left: none;
+  }
+  .sidebar-badge {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    padding: 1px 5px;
+    font-size: 10px;
+  }
+}

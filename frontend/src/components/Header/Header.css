@@ -70,20 +70,33 @@
 }
 
 /* Responsive Design */
-@media (max-width: 600px) {
+@media (max-width: 750px) {
   .carousel {
-    height: 250px; /* Reduce height for smaller screens */
-    border-radius: 0.3rem; /* Slightly smaller radius */
-    margin-top: 0px;
+    height: auto;
+    aspect-ratio: 16 / 8;
+    border-radius: 10px;
+    margin-top: 15px;
   }
 
   .slide {
-    max-height: 200px; /* Maintain aspect ratio */
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
   }
 
   .arrow {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .arrow-left {
+    left: 0.5rem;
+  }
+
+  .arrow-right {
+    right: 0.5rem;
   }
 
   .indicators {
@@ -91,23 +104,30 @@
   }
 
   .indicator {
-    height: 0.4rem;
-    width: 0.4rem;
+    height: 6px;
+    width: 6px;
   }
 }
 
-/* Additional mobile styles */
-@media (max-width: 400px) {
-  .arrow {
-    width: 1.2rem;
-    height: 1.2rem;
-  }
-
+@media (max-width: 480px) {
   .carousel {
-    height: 220px; /* Further reduce height for small screens */
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    margin-top: 10px;
   }
 
   .slide {
-    max-height: 180px; /* Maintain aspect ratio */
+    border-radius: 8px;
+  }
+
+  .arrow {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .indicator {
+    height: 5px;
+    width: 5px;
+    margin: 0 0.15rem;
   }
 }

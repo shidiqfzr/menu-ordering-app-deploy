@@ -1,13 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import './FoodItem.css';
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
-import Toast from '../Toast/Toast';
-import Fab from '@mui/material/Fab';
-import Badge from '@mui/material/Badge';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useNavigate } from 'react-router-dom';
 
 const formatCurrency = (amount) => {
     return new Intl.NumberFormat('id-ID', {
@@ -17,102 +12,85 @@ const formatCurrency = (amount) => {
     }).format(amount);
 };
 
-const FoodItem = ({ id, name, price, description, image }) => {
-    const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
-    const [showToast, setShowToast] = useState(false);
-    const navigate = useNavigate();
+const FoodItem = ({ id, name, price, description, image, available = true }) => {
+    const { cartItems, addToCart, removeFromCart, showToast } = useContext(StoreContext);
 
-    const totalCartItems = Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
+    const isOutOfStock = available === false;
 
     const handleAddToCartFromImage = (e) => {
-        e.stopPropagation(); // Prevents bubbling up to other click handlers
+        e.stopPropagation();
+        if (isOutOfStock) {
+            if (showToast) showToast(`Maaf, "${name}" saat ini sedang habis.`);
+            return;
+        }
         addToCart(id);
-        setShowToast(true);
     };
 
     const handleRemoveFromCart = (e) => {
-        e.stopPropagation(); // Prevents bubbling up to the card click handler
+        e.stopPropagation();
         removeFromCart(id);
     };
 
     const handleAddMoreToCart = (e) => {
-        e.stopPropagation(); // Prevents bubbling up to the card click handler
+        e.stopPropagation();
+        if (isOutOfStock) return;
         addToCart(id);
     };
 
-    const handleNavigateToCart = () => {
-        navigate('/cart');
-    };
-
     return (
-        <div className="food-item">
+        <div className={`food-item ${isOutOfStock ? 'food-item-unavailable' : ''}`}>
             <div className="food-item-img-container">
                 <img
-                    className="food-item-image"
+                    className={`food-item-image ${isOutOfStock ? 'image-dimmed' : ''}`}
                     src={image}
                     alt={name}
-                    onClick={handleAddToCartFromImage} // Add to cart when image is clicked
+                    onClick={handleAddToCartFromImage}
                 />
-                {!cartItems[id] ? (
+                
+                {isOutOfStock ? (
+                    <div className="out-of-stock-overlay" onClick={handleAddToCartFromImage}>
+                        <span className="out-of-stock-badge">Stok Habis</span>
+                    </div>
+                ) : !cartItems[id] ? (
                     <img
                         className="add"
                         onClick={(e) => {
                             e.stopPropagation();
                             addToCart(id);
-                            setShowToast(true);
                         }}
                         src={assets.add_icon_white}
-                        alt="Add to cart"
+                        alt="Tambah ke keranjang"
                     />
                 ) : (
                     <div className="food-item-counter">
                         <img
                             onClick={handleRemoveFromCart}
                             src={assets.remove_icon_red}
-                            alt="Remove from cart"
+                            alt="Kurangi"
                         />
                         <p>{cartItems[id]}</p>
                         <img
                             onClick={handleAddMoreToCart}
                             src={assets.add_icon_green}
-                            alt="Add more to cart"
+                            alt="Tambah"
                         />
                     </div>
                 )}
             </div>
+
             <div className="food-item-info">
                 <div className="food-item-name-rating">
                     <p>{name}</p>
-                    <img src={assets.rating_starts} alt="Rating stars" />
+                    <img src={assets.rating_starts} alt="Rating bintang" />
                 </div>
                 <p className="food-item-desc">{description}</p>
-                <p className="food-item-price">{formatCurrency(price)}</p>
+                <div className="food-item-bottom">
+                    <p className="food-item-price">{formatCurrency(price)}</p>
+                    {isOutOfStock && (
+                        <span className="food-item-stock-tag">Habis</span>
+                    )}
+                </div>
             </div>
-            {showToast && <Toast message={`Menu telah ditambahkan ke keranjang`} onClose={() => setShowToast(false)} />}
-
-            {/* Floating action button with item count */}
-            <Fab
-                color="primary"
-                aria-label="go to cart"
-                onClick={handleNavigateToCart}
-                sx={{
-                    backgroundColor: 'tomato',
-                    color: 'white',
-                    boxShadow: 'none',
-                    '&:hover': {
-                        backgroundColor: '#ff6347',
-                        boxShadow: 'none',
-                    },
-                    position: 'fixed',
-                    bottom: '20px',
-                    right: '20px',
-                    zIndex: 1000,
-                }}
-            >
-                <Badge badgeContent={totalCartItems} color="error">
-                    <ShoppingCartIcon />
-                </Badge>
-            </Fab>
         </div>
     );
 };
@@ -123,6 +101,7 @@ FoodItem.propTypes = {
     price: PropTypes.number.isRequired,
     description: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
+    available: PropTypes.bool,
 };
 
 export default FoodItem;

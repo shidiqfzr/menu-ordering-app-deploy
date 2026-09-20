@@ -29,8 +29,32 @@ a {
 
 .app {
   flex: 1;
-  width: 80%;
+  width: 82%;
+  max-width: 1280px;
   margin: auto;
+  padding-bottom: 40px;
+}
+
+@media (max-width: 1050px) {
+  .app {
+    width: 90%;
+  }
+}
+
+@media (max-width: 750px) {
+  .app {
+    width: 94%;
+    padding: 0 4px;
+    padding-bottom: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    width: 96%;
+    padding: 0 2px;
+    padding-bottom: 24px;
+  }
 }
 
 @keyframes fadeIn {

@@ -7,7 +7,18 @@ const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [promoCode, setPromoCode] = useState("");
     const [discount, setDiscount] = useState(0);
-    const url = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}`;
+    // Determine backend URL: use window.location.hostname in dev so mobile devices connect automatically
+    const getBackendUrl = () => {
+        const envUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
+        if (envUrl && !envUrl.includes("localhost")) {
+            return envUrl;
+        }
+        if (typeof window !== "undefined" && window.location.hostname && window.location.hostname !== "localhost") {
+            return `http://${window.location.hostname}:4000`;
+        }
+        return envUrl || "http://localhost:4000";
+    };
+    const url = getBackendUrl();
     const [token, setToken] = useState("");
     const [food_list, setFoodList] = useState([]);
     const [tableNumber, setTableNumber] = useState(localStorage.getItem("tableNumber") || "");
@@ -17,6 +28,12 @@ const StoreContextProvider = (props) => {
         localStorage.setItem("tableNumber", tableNumber);
     }, [tableNumber]);
 
+    const [toastMessage, setToastMessage] = useState("");
+
+    const showToast = (msg) => {
+        setToastMessage(msg);
+    };
+
     // Add to cart functionality
     const addToCart = async (itemId) => {
         if (!cartItems[itemId]) {
@@ -24,6 +41,7 @@ const StoreContextProvider = (props) => {
         } else {
             setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
         }
+        setToastMessage("Menu telah ditambahkan ke keranjang");
         if (token) {
             await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
         }
@@ -43,7 +61,9 @@ const StoreContextProvider = (props) => {
         for (const item in cartItems) {
             if (cartItems[item] > 0) {
                 let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo.price * cartItems[item];
+                if (itemInfo && itemInfo.price !== undefined) {
+                    totalAmount += Number(itemInfo.price) * cartItems[item];
+                }
             }
         }
         return totalAmount;
@@ -72,25 +92,48 @@ const StoreContextProvider = (props) => {
         } else {
             setDiscount(0);
         }
-    }, [cartItems, promoCode]); // Update discount when cartItems or promoCode changes
+    }, [cartItems, promoCode, food_list]); // Update discount when cartItems, food_list or promoCode changes
 
     // Fetch food list from API
     const fetchFoodList = async () => {
         try {
             const response = await axios.get(url + "/api/food/list");
-            const foodList = response.data.data.map(item => ({
-                ...item,
-                price: ((item.price)) 
-            }));
-            setFoodList(foodList);
+            if (response.data && response.data.data) {
+                const foodList = response.data.data.map(item => ({
+                    ...item,
+                    price: Number(item.price) 
+                }));
+                setFoodList(foodList);
+
+                // Auto-cleanup stale items from cart that were deleted from admin
+                const validIds = new Set(foodList.map(item => item._id));
+                setCartItems(prevCart => {
+                    let hasChanges = false;
+                    const cleanedCart = {};
+                    for (const id in prevCart) {
+                        if (validIds.has(id) && prevCart[id] > 0) {
+                            cleanedCart[id] = prevCart[id];
+                        } else if (prevCart[id] > 0) {
+                            hasChanges = true;
+                        }
+                    }
+                    return hasChanges ? cleanedCart : prevCart;
+                });
+            }
         } catch (error) {
             console.error("Error fetching food list", error);
         }
     };
 
     const loadCartData = async (token) => {
-        const response = await axios.post(url + "/api/cart/get", {}, { headers: { token } });
-        setCartItems(response.data.cartData);
+        try {
+            const response = await axios.post(url + "/api/cart/get", {}, { headers: { token } });
+            if (response.data && response.data.cartData) {
+                setCartItems(response.data.cartData);
+            }
+        } catch (error) {
+            console.error("Error loading cart data", error);
+        }
     };
 
     useEffect(() => {
@@ -118,7 +161,10 @@ const StoreContextProvider = (props) => {
         discount,        // Expose the discount
         promoCode,       // Expose the applied promo code
         tableNumber,     // Expose the table number
-        setTableNumber, 
+        setTableNumber,
+        toastMessage,    // Expose global toast message
+        setToastMessage,
+        showToast,
     };
 
     return (

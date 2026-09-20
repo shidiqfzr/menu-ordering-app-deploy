@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "seed": "node scripts/seed.js",
+    "seed:clean": "node scripts/clean.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^3.1.0",
+    "socket.io": "^4.8.3",
     "stripe": "^15.6.0",
     "validator": "^13.12.0"
   }

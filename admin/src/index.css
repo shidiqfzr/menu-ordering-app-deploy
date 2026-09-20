@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+:root {
+  --primary-color: tomato;
+  --primary-hover: #ff4c24;
+  --primary-light: #fff4f2;
+  --primary-border: #ffd8cc;
+  --text-main: #262626;
+  --text-secondary: #49557e;
+  --text-muted: #676767;
+  --bg-page: #fafafa;
+  --bg-card: #ffffff;
+  --border-light: #ededed;
+  --border-subtle: #f0f0f0;
+  --shadow-card: 0px 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0px 6px 20px rgba(0, 0, 0, 0.09);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 50px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body, html {
+  min-height: 100%;
+  background-color: var(--bg-page);
+  color: var(--text-secondary);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

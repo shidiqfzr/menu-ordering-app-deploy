@@ -1,0 +1,746 @@
+/* ── Table QR Modal Overlay ── */
+.table-qr-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.table-qr-modal {
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  width: 100%;
+  max-width: 680px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.table-qr-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+  background: #ffffff;
+}
+
+.tq-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tq-title-icon {
+  font-size: 24px;
+  color: var(--primary-color, tomato);
+}
+
+.tq-header-title h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tq-header-title p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.tq-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.tq-close-btn:hover {
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+/* ── 2-Column Modal Body ── */
+.table-qr-body {
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  min-height: 400px;
+}
+
+/* ── Left Pane: Acrylic Standee Preview ── */
+.table-qr-preview-pane {
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  padding: 20px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.stand-preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* The Acrylic Tent Card */
+.table-tent-card {
+  background: #ffffff;
+  width: 225px;
+  padding: 18px 14px 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.tent-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tent-logo {
+  height: 28px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.tent-tagline {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0;
+}
+
+.tent-qr-box {
+  width: 145px;
+  height: 145px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 10px;
+}
+
+.tent-qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tent-qr-placeholder {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.tent-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.tent-table-pill {
+  background: var(--primary-color, tomato);
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.25);
+}
+
+.tent-table-pill span {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  opacity: 0.9;
+}
+
+.tent-table-pill b {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.tent-instruction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  width: 100%;
+  max-width: 195px;
+}
+
+.tent-step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+}
+
+.tent-step-badge {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+}
+
+.tent-step-text {
+  font-size: 9.5px;
+  color: #475569;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* Wi-Fi Box on Standee Preview */
+.tent-wifi-box {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.tent-wifi-box.with-qr {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.tent-wifi-qr-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.tent-wifi-qr-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+}
+
+.tent-wifi-qr-sub {
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tent-wifi-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+/* Centered styling when Wi-Fi QR is not included */
+.tent-wifi-box:not(.with-qr) {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 12px;
+}
+
+.tent-wifi-box:not(.with-qr) .tent-wifi-text-col {
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.tent-wifi-box:not(.with-qr) .tent-wifi-row-title {
+  justify-content: center;
+  width: 100%;
+}
+
+.tent-wifi-box:not(.with-qr) .tent-wifi-row-pass {
+  text-align: center;
+  width: 100%;
+}
+
+.tent-wifi-row-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tent-wifi-row-pass {
+  font-size: 9px;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tent-wifi-pass-code {
+  font-weight: 700;
+  color: #0f172a;
+  font-family: monospace;
+}
+
+.tent-sub-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px dashed #e2e8f0;
+  width: 100%;
+  font-size: 8.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ── Right Pane: Controls & Actions ── */
+.table-qr-controls-pane {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background: #ffffff;
+}
+
+.tq-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tq-table-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tq-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px #d1fae5;
+  flex-shrink: 0;
+}
+
+.tq-table-heading {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tq-table-sub {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* URL Input Group */
+.tq-url-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tq-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.tq-url-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 3px 4px 3px 10px;
+  transition: border-color 0.15s ease;
+}
+
+.tq-url-input-group:focus-within {
+  border-color: var(--primary-color, tomato);
+  background: #ffffff;
+}
+
+.tq-url-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  color: #334155;
+  font-family: monospace;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tq-url-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tq-url-copy-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+/* Wi-Fi Settings Section in Control Panel */
+.tq-wifi-settings-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.tq-wifi-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tq-wifi-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.tq-wifi-card-title {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tq-wifi-card-sub {
+  font-size: 11px;
+  color: #64748b;
+  display: block;
+}
+
+.tq-wifi-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tq-wifi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tq-wifi-input {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.tq-wifi-input:focus {
+  border-color: var(--primary-color, tomato);
+}
+
+.tq-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 2px;
+}
+
+.tq-checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--primary-color, tomato);
+  cursor: pointer;
+}
+
+/* Print Guide Card */
+.tq-print-guide {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.tq-guide-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.tq-guide-text {
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.tq-guide-text b {
+  color: #1e293b;
+}
+
+/* Streamlined Actions Section */
+.tq-actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tq-btn-primary {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: var(--primary-color, tomato);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.28);
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.tq-btn-primary:hover {
+  background: #e04423;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 99, 71, 0.35);
+}
+
+.tq-btn-secondary {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.tq-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.tq-btn-icon {
+  font-size: 16px;
+}
+
+.tq-simulate-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.tq-simulate-link:hover {
+  color: var(--primary-color, tomato);
+  text-decoration: underline;
+}
+
+.tq-link-icon {
+  font-size: 13px;
+}
+
+/* ── Responsive adjustments for mobile ── */
+@media (max-width: 620px) {
+  .table-qr-body {
+    grid-template-columns: 1fr;
+  }
+
+  .table-qr-preview-pane {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px;
+  }
+
+  .table-qr-controls-pane {
+    padding: 16px;
+  }
+}
+
+/* ── Print Media Query for Direct Physical Printing ── */
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .table-qr-overlay,
+  .table-qr-modal,
+  .table-qr-body,
+  .table-qr-preview-pane {
+    position: static !important;
+    overflow: visible !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  #printable-table-tent,
+  #printable-table-tent * {
+    visibility: visible;
+  }
+
+  #printable-table-tent {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    padding: 24px 20px;
+    border: 1.5px dashed #94a3b8;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  #printable-table-tent .tent-logo {
+    height: 38px;
+  }
+
+  #printable-table-tent .tent-tagline {
+    font-size: 12px;
+  }
+
+  #printable-table-tent .tent-qr-box {
+    width: 200px;
+    height: 200px;
+  }
+
+  #printable-table-tent .tent-table-pill b {
+    font-size: 18px;
+  }
+
+  #printable-table-tent .tent-instruction-list {
+    max-width: 240px;
+    gap: 6px;
+  }
+
+  #printable-table-tent .tent-step-badge {
+    width: 17px;
+    height: 17px;
+    font-size: 10px;
+  }
+
+  #printable-table-tent .tent-step-text {
+    font-size: 11px;
+  }
+
+  #printable-table-tent .tent-sub-footer {
+    font-size: 10px;
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+}

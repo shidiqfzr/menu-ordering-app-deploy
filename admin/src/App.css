@@ -1,0 +1,73 @@
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+}
+
+.app-content {
+  display: flex;
+  flex: 1;
+}
+
+.page-content {
+  flex: 1;
+  padding: 32px 48px;
+  background-color: var(--bg-page);
+  animation: fadeIn 0.35s ease;
+  min-height: calc(100vh - 60px);
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  .page-content {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-content {
+    flex-direction: column;
+  }
+  .page-content {
+    padding: 16px 14px;
+  }
+}
+
+/* ── Route Suspense Fallback Loader ── */
+.route-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 55vh;
+  gap: 14px;
+  color: #64748b;
+  animation: fadeIn 0.25s ease;
+}
+
+.route-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--primary-color, tomato);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.route-loading-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+  letter-spacing: 0.2px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

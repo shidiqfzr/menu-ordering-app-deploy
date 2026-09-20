@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
+import { assets } from "../../assets/assets";
+import { IoAdd, IoRemove } from "react-icons/io5";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -17,6 +19,7 @@ const Cart = () => {
   const {
     cartItems,
     food_list,
+    addToCart,
     removeFromCart,
     getTotalCartAmount,
     url,
@@ -24,6 +27,7 @@ const Cart = () => {
     discount,
     token,
     tableNumber,
+    setTableNumber,
     setInvoiceNumber,
   } = useContext(StoreContext);
   const [enteredPromoCode, setEnteredPromoCode] = useState("");
@@ -45,6 +49,9 @@ const Cart = () => {
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
     setCustomerInfo((info) => ({ ...info, [name]: value }));
+    if (name === "tableNumber") {
+      setTableNumber(value);
+    }
   };
 
   // Place order function
@@ -200,111 +207,264 @@ const Cart = () => {
     }
   }, [getTotalCartAmount, navigate, token]);
 
+  // Calculate total item count in cart
+  const totalItemCount = Object.values(cartItems || {}).reduce(
+    (sum, qty) => (qty > 0 ? sum + qty : sum),
+    0
+  );
+
   return (
     <div className="cart">
-      <div className="cart-items">
-        <div className="cart-items-title">
-          <p>Item</p>
-          <p>Nama</p>
-          <p>Harga</p>
-          <p>Jumlah</p>
-          <p>Total</p>
-          <p>Hapus</p>
-        </div>
-        <br />
-        <hr />
-        {food_list.map((item) => {
-          if (cartItems[item._id] > 0) {
-            return (
-              <div key={item._id}>
-                <div className="cart-items-title cart-items-item">
-                  <img src={item.image} alt={item.name} />
-                  <p>{item.name}</p>
-                  <p>{formatCurrency(item.price)}</p>
-                  <p className="item-quantity">{cartItems[item._id]}</p>
-                  <p>{formatCurrency(item.price * cartItems[item._id])}</p>
-                  <p onClick={() => removeFromCart(item._id)} className="cross">
-                    x
-                  </p>
-                </div>
-                <hr />
-              </div>
-            );
-          }
-          return null;
-        })}
+      <div className="cart-card cart-items-card">
+        <h2 className="cart-section-title">Detail Pesanan</h2>
+
+        {totalItemCount === 0 ? (
+          <div className="cart-empty-state">
+            <img src={assets.empty_cart} alt="Keranjang Kosong" className="cart-empty-img" />
+            <h3>Keranjang Anda Masih Kosong</h3>
+            <p>Pilih hidangan favorit Anda dari menu dan pesan sekarang.</p>
+            <button type="button" className="cart-empty-btn" onClick={() => navigate("/")}>
+              Jelajahi Menu
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="cart-items-header">
+              <p className="col-img">Item</p>
+              <p className="col-name">Nama Menu</p>
+              <p className="col-unit-price">Harga Satuan</p>
+              <p className="col-qty">Jumlah</p>
+              <p className="col-total">Total</p>
+            </div>
+
+            <div className="cart-items-list">
+              {food_list.map((item) => {
+                if (cartItems[item._id] > 0) {
+                  const qty = cartItems[item._id];
+                  const subtotal = item.price * qty;
+
+                  return (
+                    <div key={item._id} className="cart-item-row">
+                      {/* 1. Item Image Thumbnail */}
+                      <div className="cart-item-thumb">
+                        <img src={item.image} alt={item.name} />
+                      </div>
+
+                      {/* 2. Item Content Area (Mobile & Desktop Title) */}
+                      <div className="cart-item-content">
+                        <div className="cart-item-top-row">
+                          <h3 className="cart-item-title">{item.name}</h3>
+                          <span className="cart-item-mobile-subtotal">
+                            {formatCurrency(subtotal)}
+                          </span>
+                        </div>
+
+                        <div className="cart-item-bottom-row">
+                          <p className="cart-item-unit-price">
+                            {formatCurrency(item.price)}
+                            <span className="unit-label"> / porsi</span>
+                          </p>
+
+                          <div className="cart-stepper">
+                            <button
+                              type="button"
+                              className="cart-stepper-btn"
+                              onClick={() => removeFromCart(item._id)}
+                              aria-label={`Kurangi ${item.name}`}
+                            >
+                              <IoRemove />
+                            </button>
+                            <span className="cart-stepper-value">{qty}</span>
+                            <button
+                              type="button"
+                              className="cart-stepper-btn"
+                              onClick={() => addToCart(item._id)}
+                              aria-label={`Tambah ${item.name}`}
+                            >
+                              <IoAdd />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. Desktop Only Separate Columns */}
+                      <div className="cart-item-desktop-unit-price">
+                        {formatCurrency(item.price)}
+                      </div>
+
+                      <div className="cart-item-desktop-stepper">
+                        <div className="cart-stepper">
+                          <button
+                            type="button"
+                            className="cart-stepper-btn"
+                            onClick={() => removeFromCart(item._id)}
+                            aria-label={`Kurangi ${item.name}`}
+                          >
+                            <IoRemove />
+                          </button>
+                          <span className="cart-stepper-value">{qty}</span>
+                          <button
+                            type="button"
+                            className="cart-stepper-btn"
+                            onClick={() => addToCart(item._id)}
+                            aria-label={`Tambah ${item.name}`}
+                          >
+                            <IoAdd />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="cart-item-desktop-total">
+                        {formatCurrency(subtotal)}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="cart-bottom">
         <div className="cart-bottom-left">
-          <div className="customer-info">
-            <h2>Informasi Pelanggan</h2>
-            <label htmlFor="tableNumber">Nomor Meja:</label>
-            <input
-              name="tableNumber"
-              onChange={onChangeHandler}
-              value={customerInfo.tableNumber}
-              type="number"
-              placeholder="Nomor Meja"
-              required
-            />
-            <label htmlFor="tableNumber">Catatan Tambahan:</label>
-            <input
-              name="note"
-              onChange={onChangeHandler}
-              value={customerInfo.note}
-              type="text"
-              placeholder="Opsional"
-            />
-            <label htmlFor="tableNumber">Metode Pembayaran:</label>
-            <select
-              name="paymentMethod"
-              value={customerInfo.paymentMethod}
-              onChange={onChangeHandler}
-            >
-              <option value="Elektronik">Pembayaran Elektronik</option>
-              <option value="Manual">Pembayaran Tunai</option>
-            </select>
-          </div>
+          {/* Customer Info Card */}
+          <div className="cart-card customer-info-card">
+            <h2 className="cart-section-title">Informasi Pelanggan</h2>
 
-          <div className="cart-promocode">
-            <h2>Voucher</h2>
-            <div>
-              <p>Jika kamu memiliki kode promo, masukkan di sini</p>
-              <div className="cart-promocode-input">
+            {/* Table Number Display or Input */}
+            {tableNumber ? (
+              <div className="cart-table-card verified">
+                <div className="cart-table-info">
+                  <div className="cart-table-pill">
+                    <span>Meja <strong>{customerInfo.tableNumber}</strong></span>
+                  </div>
+                  <span className="cart-table-source-tag">Terdeteksi dari QR</span>
+                </div>
+              </div>
+            ) : (
+              <div className="cart-field-group">
+                <label htmlFor="tableNumber" className="cart-field-label">
+                  Nomor Meja <span className="cart-required-badge">*Wajib Diisi</span>
+                </label>
                 <input
-                  type="text"
-                  placeholder="kode promo"
-                  value={enteredPromoCode}
-                  onChange={(e) => setEnteredPromoCode(e.target.value)}
+                  id="tableNumber"
+                  name="tableNumber"
+                  onChange={onChangeHandler}
+                  value={customerInfo.tableNumber || ""}
+                  type="number"
+                  min="1"
+                  placeholder="Masukkan nomor meja Anda (cth: 5)"
+                  className="cart-input"
+                  required
                 />
-                <button onClick={() => handlePromoCodeSubmit(enteredPromoCode)}>
-                  Submit
+              </div>
+            )}
+
+            {/* Note Input */}
+            <div className="cart-field-group">
+              <label htmlFor="note" className="cart-field-label">
+                Catatan Tambahan <span className="cart-optional-text">(Opsional)</span>
+              </label>
+              <input
+                id="note"
+                name="note"
+                onChange={onChangeHandler}
+                value={customerInfo.note}
+                type="text"
+                placeholder="Contoh: Jangan terlalu pedas, es dipisah"
+                className="cart-input"
+              />
+            </div>
+
+            {/* Payment Method Segmented Cards */}
+            <div className="cart-field-group">
+              <label className="cart-field-label">Metode Pembayaran</label>
+              <div className="payment-method-selector">
+                <button
+                  type="button"
+                  className={`payment-method-btn ${customerInfo.paymentMethod === "Elektronik" ? "active" : ""}`}
+                  onClick={() => setCustomerInfo((prev) => ({ ...prev, paymentMethod: "Elektronik" }))}
+                >
+                  <span className="payment-radio-dot"></span>
+                  <div className="payment-btn-text">
+                    <span className="payment-method-name">Pembayaran Elektronik</span>
+                    <span className="payment-method-sub">QRIS, E-Wallet, Debit/Kredit</span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  className={`payment-method-btn ${customerInfo.paymentMethod === "Manual" ? "active" : ""}`}
+                  onClick={() => setCustomerInfo((prev) => ({ ...prev, paymentMethod: "Manual" }))}
+                >
+                  <span className="payment-radio-dot"></span>
+                  <div className="payment-btn-text">
+                    <span className="payment-method-name">Pembayaran Tunai</span>
+                    <span className="payment-method-sub">Bayar langsung di kasir</span>
+                  </div>
                 </button>
               </div>
             </div>
           </div>
+
+          {/* Voucher Promo Card */}
+          <div className="cart-card cart-promocode-card">
+            <h2 className="cart-section-title">Voucher Promo</h2>
+            <p className="cart-section-subtitle">Punya kode promo? Masukkan untuk mendapatkan potongan harga</p>
+            <div className="cart-promocode-box">
+              <input
+                type="text"
+                placeholder="Kode promo (cth: MERDEKA)"
+                value={enteredPromoCode}
+                onChange={(e) => setEnteredPromoCode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handlePromoCodeSubmit(enteredPromoCode);
+                  }
+                }}
+                className="cart-promocode-input"
+              />
+              <button
+                type="button"
+                className="cart-promocode-btn"
+                onClick={() => handlePromoCodeSubmit(enteredPromoCode)}
+              >
+                Terapkan
+              </button>
+            </div>
+            {discount > 0 && (
+              <div className="promo-applied-tag">
+                <span>Voucher aktif: Hemat <strong>{formatCurrency(discount)}</strong></span>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="cart-total">
-          <h2>Total Keranjang</h2>
-          <div>
+        {/* Total Summary Card */}
+        <div className="cart-card cart-total">
+          <h2 className="cart-section-title">Ringkasan Pembayaran</h2>
+          <div className="cart-total-body">
             <div className="cart-total-details">
-              <p>Subtotal</p>
-              <p>{formatCurrency(getTotalCartAmount())}</p>
+              <span>Subtotal</span>
+              <span className="amount-val">{formatCurrency(getTotalCartAmount())}</span>
             </div>
-            <hr />
-            <div className="cart-total-details">
-              <p>Voucher Diskon</p>
-              <p>- {formatCurrency(discount)}</p>
-            </div>
-            <hr />
-            <div className="cart-total-details">
-              <b>Total Pembayaran</b>
-              <b>{formatCurrency(getTotalCartAmount() - discount)}</b>
+            {discount > 0 && (
+              <div className="cart-total-details discount-row">
+                <span>Voucher Diskon</span>
+                <span className="amount-val discount-val">- {formatCurrency(discount)}</span>
+              </div>
+            )}
+            <hr className="cart-total-divider" />
+            <div className="cart-total-details total-highlight">
+              <span>Total Pembayaran</span>
+              <span className="total-amount-val">{formatCurrency(getTotalCartAmount() - discount)}</span>
             </div>
           </div>
-          <button onClick={placeOrder}>PROSES PESANAN</button>
+          <button type="button" className="cart-checkout-btn" onClick={placeOrder}>
+            Proses Pesanan
+          </button>
         </div>
       </div>
     </div>

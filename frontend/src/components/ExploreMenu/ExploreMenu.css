@@ -1,79 +1,288 @@
-.explore-menu{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+/* ExploreMenu Component - Modern Responsive Category Architecture */
+.explore-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
 }
 
-.explore-menu h1{
-    color: #262626;
-    font-weight: 500;
-    padding-top: 30px;
+.explore-menu-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 28px;
 }
 
-.explore-menu-text{
-    max-width: 70%;
-    columns: #808080;
+.explore-menu-title {
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  margin: 0;
 }
 
-.explore-menu-list{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 30px;
-    text-align: center;
-    margin: 20px 0px;
-    overflow-x: scroll;
+.explore-menu-text {
+  max-width: 760px;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
 }
 
-.explore-menu-list::-webkit-scrollbar{
-    display: none;
+/* Wrapper for horizontal scroll with desktop navigation buttons */
+.explore-menu-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.explore-menu-list-item img{
-    width: 7.5vw;
-    min-width: 80px;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: 0.2s;
+.explore-menu-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  margin: 16px 0 8px 0;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 4px 12px 4px;
+  width: 100%;
 }
 
-.explore-menu-list-item p{
-    margin-top: 10px;
-    color: #747474;
-    font-size: max(1.4vw, 16px);
-    cursor: pointer;
+.explore-menu-list::-webkit-scrollbar {
+  display: none;
 }
 
-.explore-menu hr{
-    margin: 10px 0px;
-    height: 2px;
-    background-color: #e2e2e2;
-    border: none;
+/* Category Item */
+.explore-menu-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.explore-menu-list-item .active{
-    border: 4px solid tomato;
+@media (hover: hover) {
+  .explore-menu-list-item:hover {
+    transform: translateY(-4px);
+  }
+
+  .explore-menu-list-item:hover img,
+  .explore-menu-list-item:hover .all-menu-icon-inner {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .explore-menu-list-item:hover p {
+    color: #ff6347;
+  }
+}
+
+/* Category Images & All Icon - Proportional and substantial on Desktop (96px) */
+.explore-menu-list-item img,
+.all-menu-icon {
+  width: 96px;
+  height: 96px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 3.5px solid transparent;
+  padding: 2.5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.explore-menu-list-item img {
+  object-fit: cover;
+  background-color: #f8fafc;
+}
+
+.all-menu-icon {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.all-menu-icon-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 30px;
+  transition: all 0.2s ease;
+}
+
+/* Active Category Ring - Identical across all items without expanding */
+.explore-menu-list-item img.active,
+.all-menu-icon.active {
+  border-color: #ff6347;
+}
+
+.all-menu-icon.active .all-menu-icon-inner {
+  background: #fff5f5;
+  color: #ff6347;
+  border-color: #fca5a5;
+}
+
+/* Category Label */
+.explore-menu-list-item p {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: color 0.15s ease, font-weight 0.15s ease;
+  white-space: nowrap;
+}
+
+.explore-menu-list-item p.active-text {
+  color: #ff6347;
+  font-weight: 700;
+}
+
+/* Desktop Scroll Buttons */
+.menu-scroll-btn {
+  position: absolute;
+  top: 56px;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #334155;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.menu-scroll-btn:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  color: #ff6347;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.menu-scroll-btn.scroll-left {
+  left: -16px;
+}
+
+.menu-scroll-btn.scroll-right {
+  right: -16px;
+}
+
+/* Divider */
+.explore-menu-divider {
+  margin: 6px 0 0 0;
+  height: 1px;
+  background-color: #f1f5f9;
+  border: none;
+}
+
+/* Tablet Responsiveness */
+@media (max-width: 1050px) {
+  .explore-menu-title {
+    font-size: 24px;
+  }
+
+  .explore-menu-text {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .explore-menu-list {
+    gap: 22px;
+  }
+
+  .explore-menu-list-item img,
+  .all-menu-icon {
+    width: 80px;
+    height: 80px;
+    border-width: 3px;
     padding: 2px;
+  }
+
+  .all-menu-icon-inner {
+    font-size: 26px;
+  }
+
+  .explore-menu-list-item p {
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+
+  .menu-scroll-btn {
+    top: 48px;
+  }
+
+  .menu-scroll-btn.scroll-left {
+    left: -10px;
+  }
+
+  .menu-scroll-btn.scroll-right {
+    right: -10px;
+  }
 }
 
-@media (max-width:1050px) {
-    .explore-menu-text{
-        max-width: 100%;
-        font-size: 14px;
-    }
-    
-}
+/* Mobile Responsiveness - 100% Preserved exactly as the user loves it */
+@media (max-width: 750px) {
+  .explore-menu {
+    gap: 2px;
+  }
 
-@media (max-width:750px) {
-    .explore-menu h1{
-        color: #262626;
-        font-weight: 500;
-        padding-top: 30px;
-        font-size: x-large;
-    }
-    
-    .explore-menu-text{
-        max-width: 100%;
-        font-size:small;
-    }
+  .explore-menu-header {
+    padding-top: 16px;
+    gap: 6px;
+  }
+
+  .explore-menu-title {
+    font-size: 19px;
+  }
+
+  .explore-menu-text {
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+
+  .explore-menu-list {
+    gap: 16px;
+    margin: 10px 0 4px 0;
+    padding: 6px 2px;
+  }
+
+  .explore-menu-list-item img,
+  .all-menu-icon {
+    width: 64px;
+    height: 64px;
+    border-width: 2.5px;
+    padding: 1.5px;
+  }
+
+  .all-menu-icon-inner {
+    font-size: 20px;
+  }
+
+  .explore-menu-list-item p {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .menu-scroll-btn {
+    display: none;
+  }
 }

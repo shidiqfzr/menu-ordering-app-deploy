@@ -1,0 +1,568 @@
+/* ── Receipt Modal Backdrop ── */
+.receipt-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.receipt-modal-container {
+  background: #f1f5f9;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ── Modal Header ── */
+.receipt-modal-header {
+  padding: 14px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.receipt-type-selector {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 50px;
+  border: 1px solid #e2e8f0;
+}
+
+.type-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.type-tab-btn .tab-icon {
+  font-size: 16px;
+}
+
+.type-tab-btn.active {
+  background: #ffffff;
+  color: var(--primary-color, tomato);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.receipt-close-btn {
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.receipt-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+/* ── Receipt Paper Scroll Area ── */
+.receipt-paper-wrapper {
+  padding: 24px 20px;
+  overflow-y: auto;
+  max-height: calc(85vh - 130px);
+  background: #f1f5f9;
+  box-sizing: border-box;
+}
+
+/* ── Authentic Thermal Receipt Paper Card ── */
+.receipt-paper {
+  background: #ffffff !important;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 28px 24px 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  font-family: 'Space Mono', 'Courier Prime', 'Courier New', Courier, monospace;
+  color: #1e293b;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  position: relative;
+  border-top: 5px solid var(--primary-color, tomato);
+}
+
+.receipt-content {
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dotted / Dashed Divider */
+.dashed-divider {
+  border-top: 1.5px dashed #cbd5e1;
+  margin: 14px 0;
+  width: 100%;
+}
+
+.solid-divider-thin {
+  border-top: 1px solid #e2e8f0;
+  margin: 8px 0;
+  width: 100%;
+}
+
+/* ── Customer Receipt Details ── */
+.receipt-header {
+  text-align: center;
+  padding-top: 4px;
+}
+
+.cafe-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 2px;
+  color: #0f172a;
+  font-family: inherit;
+}
+
+.cafe-sub {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.cafe-info {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.receipt-meta {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.meta-row span:first-child {
+  color: #64748b;
+}
+
+.meta-row b, .meta-row span:last-child {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* ── Items Table ── */
+.receipt-items-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.items-header-row {
+  display: grid;
+  grid-template-columns: 1fr 32px 65px 72px;
+  font-weight: 800;
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.col-qty {
+  text-align: center;
+}
+
+.col-price, .col-total {
+  text-align: right;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 1fr 32px 65px 72px;
+  font-size: 12px;
+  padding: 4px 0;
+  align-items: center;
+}
+
+.item-name {
+  font-weight: 700;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+.item-qty {
+  text-align: center;
+  color: #475569;
+  font-weight: 600;
+}
+
+.item-price, .item-total {
+  text-align: right;
+  color: #1e293b;
+}
+
+.item-total {
+  font-weight: 700;
+}
+
+/* ── Totals ── */
+.receipt-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #475569;
+}
+
+.total-row.discount {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.total-row.grand-total {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 4px;
+}
+
+.total-row.cash-received-row,
+.total-row.cash-change-row {
+  color: #334155;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.cash-change-val {
+  font-weight: 600;
+  color: #334155;
+}
+
+.receipt-note-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 12px 0 6px;
+  font-size: 11.5px;
+}
+
+.receipt-note-box span {
+  font-weight: 700;
+  color: #475569;
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.receipt-note-box p {
+  color: #1e293b;
+  margin: 0;
+  font-style: italic;
+}
+
+.receipt-footer {
+  text-align: center;
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.receipt-footer .footer-title {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+/* ── Kitchen Order Ticket (KOT) ── */
+.kitchen-receipt {
+  border-top-color: #2563eb;
+}
+
+.kitchen-header {
+  text-align: center;
+}
+
+.kot-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.kitchen-table-banner {
+  background: #0f172a;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  font-size: 22px;
+  font-weight: 800;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  margin: 10px 0;
+}
+
+.kot-meta {
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 2px;
+}
+
+.kitchen-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.kitchen-item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.kot-qty {
+  font-size: 14.5px;
+  font-weight: 800;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  height: 28px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.kot-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.kot-name {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 14px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  line-height: 1.3;
+}
+
+.kot-category {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: normal;
+  margin-top: 1px;
+}
+
+.kitchen-note-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 12px 0 6px;
+  font-size: 11.5px;
+}
+
+.note-alert-label {
+  font-weight: 700;
+  color: #475569;
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.note-alert-text {
+  font-size: 12px;
+  font-weight: normal;
+  color: #1e293b;
+  margin: 0;
+  font-style: italic;
+}
+
+.no-special-note {
+  font-size: 11.5px;
+  color: #94a3b8;
+  text-align: center;
+  font-style: italic;
+  margin: 6px 0;
+}
+
+.kitchen-footer {
+  text-align: center;
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Modal Footer ── */
+.receipt-modal-footer {
+  padding: 14px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.receipt-modal-footer span {
+  flex: 1;
+}
+
+.receipt-print-btn {
+  background: var(--primary-color, tomato);
+  color: #ffffff;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(255, 99, 71, 0.35);
+  white-space: nowrap;
+}
+
+.receipt-print-btn:hover {
+  background: #e5533d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 99, 71, 0.45);
+}
+
+.receipt-print-btn:active {
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════════ */
+/* ── PRINT MEDIA QUERY (58mm / 80mm THERMAL POS) ── */
+/* ══════════════════════════════════════════════════ */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
+
+  .receipt-modal-container {
+    box-shadow: none;
+    background: transparent;
+    max-width: 100%;
+    border: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .receipt-paper-wrapper {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+  }
+
+  .receipt-paper,
+  .receipt-paper * {
+    visibility: visible;
+  }
+
+  .receipt-paper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 80mm;
+    margin: 0;
+    padding: 8px;
+    box-shadow: none;
+    border: none;
+    color: #000000 !important;
+    font-size: 12px;
+  }
+
+  @page {
+    size: auto;
+    margin: 3mm;
+  }
+}
