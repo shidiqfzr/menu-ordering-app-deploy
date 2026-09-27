@@ -21,7 +21,6 @@ import TableQRModal from '../../components/TableQRModal/TableQRModal';
 import { useSocket } from '../../context/SocketContext';
 import './Tables.css';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
 
 // Helper to format dining elapsed duration
@@ -142,7 +141,7 @@ const Tables = () => {
   };
 
   // Undo manual clear table
-  const handleUndoClear = async (tableNumber, orderId) => {
+  const handleUndoClear = async (tableNumber, orderIds) => {
     setClearedTables((prev) => {
       const next = { ...prev };
       delete next[tableNumber];
@@ -150,17 +149,25 @@ const Tables = () => {
       return next;
     });
 
-    if (orderId) {
+    const idsToRevert = Array.isArray(orderIds)
+      ? orderIds
+      : (orderIds ? [orderIds] : []);
+
+    if (idsToRevert.length > 0) {
       try {
-        await axios.post(`${BACKEND_URL}/api/order/status`, {
-          orderId,
-          status: 'Disajikan'
-        });
+        await Promise.all(
+          idsToRevert.map(id =>
+            api.post('/api/order/status', {
+              orderId: id,
+              status: 'Disajikan'
+            })
+          )
+        );
         localStorage.setItem('bujang_orders_sync', Date.now().toString());
         window.dispatchEvent(new CustomEvent('orders-changed'));
         fetchOrders(true);
       } catch (err) {
-        console.error(err);
+        console.error('Error undoing clear table:', err);
       }
     }
 
@@ -171,12 +178,25 @@ const Tables = () => {
   // 1-Click "Kosongkan Meja" with Backend Order Completion & Instant Sync
   const handleClearTable = async (tableNumber, orderId) => {
     try {
-      if (orderId) {
-        // Complete the order in backend database
-        await axios.post(`${BACKEND_URL}/api/order/status`, {
-          orderId,
-          status: 'Selesai'
-        });
+      // Find all active dining orders for this table to ensure all active orders are marked Selesai
+      const tableDiningOrders = orders.filter(
+        o => Number(o.tableNumber) === Number(tableNumber) && o.status === 'Disajikan'
+      );
+      const targetIds = new Set();
+      if (orderId) targetIds.add(orderId);
+      tableDiningOrders.forEach(o => targetIds.add(o._id));
+      const orderIdsToComplete = Array.from(targetIds);
+
+      if (orderIdsToComplete.length > 0) {
+        // Complete the orders in backend database using configured api client
+        await Promise.all(
+          orderIdsToComplete.map(id =>
+            api.post('/api/order/status', {
+              orderId: id,
+              status: 'Selesai'
+            })
+          )
+        );
       }
 
       const updated = {
@@ -201,7 +221,7 @@ const Tables = () => {
               type="button"
               className="toast-undo-btn"
               onClick={() => {
-                handleUndoClear(tableNumber, orderId);
+                handleUndoClear(tableNumber, orderIdsToComplete);
                 closeToast();
               }}
             >
@@ -218,7 +238,7 @@ const Tables = () => {
 
       fetchOrders(true);
     } catch (err) {
-      console.error(err);
+      console.error('Error clearing table:', err);
       toast.error('Gagal mengosongkan meja');
     }
   };

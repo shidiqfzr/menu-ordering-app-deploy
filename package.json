@@ -1,0 +1,24 @@
+{
+  "name": "menu-ordering-app-deploy",
+  "version": "1.0.0",
+  "description": "Bujang Cafe POS & Menu Ordering System - Test Suite",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config=tests/jest.unit.config.js --json --outputFile=tests/reports/unit-results.json",
+    "test:api": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config=tests/jest.api.config.js --runInBand --json --outputFile=tests/reports/api-results.json",
+    "test:e2e": "playwright test --config=playwright.config.js",
+    "test:all": "node scripts/run-all-tests.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "cross-env": "^10.1.0",
+    "jest": "^30.5.2",
+    "jest-html-reporter": "^4.4.2",
+    "mongodb-memory-server": "^11.3.0",
+    "supertest": "^7.3.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

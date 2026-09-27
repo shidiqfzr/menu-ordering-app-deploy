@@ -20,7 +20,8 @@ import {
 } from 'react-icons/md';
 import './Dashboard.css';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+
 
 const DATE_RANGE_OPTIONS = [
   { key: 'today', label: 'Hari Ini' },

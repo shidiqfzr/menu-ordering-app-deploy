@@ -46,7 +46,17 @@ const Login = () => {
     setSubmitting(false);
 
     if (result.success) {
-      const userRole = result.data?.user?.role;
+      // Use the role directly from AuthContext state (already updated by login())
+      // Fallback: read from localStorage since state update is async
+      let userRole = role;
+      try {
+        const stored = localStorage.getItem('adminUser') || sessionStorage.getItem('adminUser');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          userRole = (parsed.role === 'admin') ? 'manager' : (parsed.role || 'manager');
+        }
+      } catch { /* ignore */ }
+
       if (location.state?.from?.pathname) {
         navigate(location.state.from.pathname, { replace: true });
       } else if (userRole === 'kasir' || userRole === 'kitchen') {

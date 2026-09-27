@@ -1,0 +1,610 @@
+{
+  "config": {
+    "argv": [
+      "C:\\laragon\\bin\\nodejs\\node-v24.12.0-win-x64\\node.exe",
+      "D:\\College\\Tugas Sopiansyah\\Tugas Akhir\\menu-ordering-app-deploy\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "D:\\College\\Tugas Sopiansyah\\Tugas Akhir\\menu-ordering-app-deploy\\playwright.config.js",
+    "rootDir": "D:/College/Tugas Sopiansyah/Tugas Akhir/menu-ordering-app-deploy/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/College/Tugas Sopiansyah/Tugas Akhir/menu-ordering-app-deploy/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Customer App",
+        "name": "Customer App",
+        "testDir": "D:/College/Tugas Sopiansyah/Tugas Akhir/menu-ordering-app-deploy/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/customer\\/.*\\.spec\\.js/"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/College/Tugas Sopiansyah/Tugas Akhir/menu-ordering-app-deploy/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Admin App",
+        "name": "Admin App",
+        "testDir": "D:/College/Tugas Sopiansyah/Tugas Akhir/menu-ordering-app-deploy/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/admin\\/.*\\.spec\\.js/"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "./tests/reports/playwright-html-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "./tests/reports/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "customer\\auth.spec.js",
+      "file": "customer/auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E Customer: Homepage & Authentication Modal",
+          "file": "customer/auth.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-E2E-CUST-01: Homepage loads successfully with branding and navbar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Customer App",
+                  "projectName": "Customer App",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3278,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:21.025Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "57e2ff59bbb402187596-35d025066819b6d74a50",
+              "file": "customer/auth.spec.js",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-CUST-02: Sign In button opens Login popup and close button dismisses it",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Customer App",
+                  "projectName": "Customer App",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3597,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:26.000Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "57e2ff59bbb402187596-79dc163dbab3be1e8153",
+              "file": "customer/auth.spec.js",
+              "line": 19,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "customer\\menu.spec.js",
+      "file": "customer/menu.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E Customer: Menu Exploration & Cart Workflow",
+          "file": "customer/menu.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-E2E-CUST-03: Explore Menu section displays categories and food list",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Customer App",
+                  "projectName": "Customer App",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2608,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:29.704Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d28c56832d7852bab46-79fc91057a160c6ce5e7",
+              "file": "customer/menu.spec.js",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-CUST-04: Cart page displays empty state or checkout fields properly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Customer App",
+                  "projectName": "Customer App",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2289,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:32.373Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d28c56832d7852bab46-b969feb6322c7342443a",
+              "file": "customer/menu.spec.js",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-CUST-05: Table number query parameter auto-populates table number",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Customer App",
+                  "projectName": "Customer App",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2666,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:34.689Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d28c56832d7852bab46-957c6e716c6f48203a31",
+              "file": "customer/menu.spec.js",
+              "line": 30,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "admin\\login.spec.js",
+      "file": "admin/login.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E Admin: Authentication & Role-Based Access Control",
+          "file": "admin/login.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-E2E-ADM-01: Kasir logs in and redirects to Orders (POS) page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6994,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:41.026Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "79f86e1ae3f4c50fdb9b-04bb1948b7bb17608da8",
+              "file": "admin/login.spec.js",
+              "line": 102,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-ADM-02: Manager logs in and redirects to Dashboard page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5577,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:51.255Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "79f86e1ae3f4c50fdb9b-ef656adcb80af91af42c",
+              "file": "admin/login.spec.js",
+              "line": 114,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-ADM-03: Invalid credentials show error toast/message",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5710,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:29:56.925Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "79f86e1ae3f4c50fdb9b-4686afcb0ab1bab3643e",
+              "file": "admin/login.spec.js",
+              "line": 126,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-ADM-04: Kasir role cannot access Manager Dashboard (RBAC check)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9710,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:30:02.674Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "79f86e1ae3f4c50fdb9b-c12edf6399590179b7e3",
+              "file": "admin/login.spec.js",
+              "line": 136,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "admin\\tables.spec.js",
+      "file": "admin/tables.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E Admin: Tables Management & 1-Click Kosongkan Meja",
+          "file": "admin/tables.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-E2E-TAB-01: Tables page loads table cards and status pills",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9543,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:30:12.628Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd8032453ff9bf37cafe-b0e67f96f3f6a8b23273",
+              "file": "admin/tables.spec.js",
+              "line": 47,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-TAB-02: Table capacity stepper adjusts total table count",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13896,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:30:22.256Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd8032453ff9bf37cafe-fed6a05ccc57e23c86a3",
+              "file": "admin/tables.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-TAB-03: QR Code modal opens and can be closed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13217,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:30:36.366Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd8032453ff9bf37cafe-26c85b64c1710631c720",
+              "file": "admin/tables.spec.js",
+              "line": 81,
+              "column": 3
+            },
+            {
+              "title": "TC-E2E-TAB-04: Filter tabs correctly switch table views",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Admin App",
+                  "projectName": "Admin App",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 12851,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-27T06:30:49.630Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd8032453ff9bf37cafe-0bea03ff6316c605f4d9",
+              "file": "admin/tables.spec.js",
+              "line": 98,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-27T06:29:19.650Z",
+    "duration": 124825.146,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

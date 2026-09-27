@@ -228,9 +228,33 @@ const Orders = () => {
   // Cancel order handler
   const handleCancelOrder = (orderId, invoiceNumber) => {
     const inv = invoiceNumber || 'pesanan ini';
-    if (window.confirm(`Batalkan ${inv}? Status pesanan akan diubah ke "Dibatalkan" dan meja akan dibebaskan.`)) {
-      handleStatusChange(orderId, 'Dibatalkan');
-    }
+    const toastId = `cancel-confirm-${orderId}`;
+    toast.warn(
+      ({ closeToast }) => (
+        <div>
+          <p style={{ margin: '0 0 8px', fontWeight: 600 }}>Batalkan {inv}?</p>
+          <p style={{ margin: '0 0 10px', fontSize: '0.85rem' }}>Status akan diubah ke "Dibatalkan" dan meja akan dibebaskan.</p>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={() => {
+                handleStatusChange(orderId, 'Dibatalkan');
+                toast.dismiss(toastId);
+              }}
+              style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}
+            >
+              Ya, Batalkan
+            </button>
+            <button
+              onClick={closeToast}
+              style={{ background: '#6b7280', color: '#fff', border: 'none', padding: '4px 12px', borderRadius: 4, cursor: 'pointer' }}
+            >
+              Kembali
+            </button>
+          </div>
+        </div>
+      ),
+      { toastId, autoClose: false, closeOnClick: false, closeButton: false }
+    );
   };
 
   const handleResetFilters = () => {

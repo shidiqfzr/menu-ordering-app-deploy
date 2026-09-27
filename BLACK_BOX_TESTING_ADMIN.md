@@ -1,167 +1,332 @@
-# DOKUMEN PENGUJIAN BLACK-BOX TESTING
-## SISTEM APLIKASI KASIR & MANAJEMEN RESTORAN (BUJANG CAFE POS)
+# DOKUMEN PENGUJIAN BLACK-BOX TESTING (LENGKAP)
+## PANEL ADMINISTRASI & POS — BUJANG CAFE ADMIN PANEL
 
 ---
 
 ### Informasi Dokumen
-- **Nama Aplikasi**: Bujang Cafe POS & Restaurant Management System
-- **Komponen yang Diuji**: Panel Administrasi (Admin Panel) - Khusus Peran Kasir & Manager
-- **Metode Pengujian**: *Black-Box Testing* (*Equivalence Partitioning* & *Boundary Value Analysis*)
-- **Tanggal Pengujian**: 17 September 2026
-- **Lingkungan Pengujian**:
-  - **Sistem Operasi**: Windows 11
-  - **Peramban (Browser)**: Google Chrome / Microsoft Edge (Chromium Engine)
-  - **Resolusi Layar**: 1920 × 1080 (Desktop POS Screen)
-  - **Frontend Stack**: React 19, Vite, React Router v7, React-Toastify, Socket.IO Client
-  - **Backend Stack**: Node.js, Express.js, MongoDB Mongoose, Socket.IO Server
-  - **Data Uji (Akun Demo)**:
-    - Akun Kasir: `kasir@bujangcafe.com` / `kasir12345` (Peran: `kasir`)
-    - Akun Manager: `manager@bujangcafe.com` / `manager12345` (Peran: `manager`)
+- **Nama Aplikasi**: Bujang Cafe — Admin Panel (POS & Restaurant Management System)
+- **URL Aplikasi**: `http://localhost:5174`
+- **Metode Pengujian**: Black-Box Testing (Equivalence Partitioning & Boundary Value Analysis) + Static Code Analysis
+- **Versi Dokumen**: v2 (Update termasuk fix fitur Kosongkan Meja)
+- **Frontend Stack**: React 19, Vite, React Router v7, React-Toastify, Socket.IO Client
+- **Backend Stack**: Node.js, Express.js, MongoDB Mongoose, Socket.IO Server
+- **Tanggal Pengujian**: 26 September 2026
+- **Penguji**: _(isi nama penguji)_
+- **Lingkungan**:
+  - OS: Windows 11
+  - Browser: Google Chrome / Edge (Chromium)
+  - Resolusi: 1920×1080 (Desktop POS Screen)
 
 ---
 
-## 1. PENDAHULUAN & TUJUAN PENGUJIAN
+### Akun Uji
 
-Pengujian *Black-Box* ini bertujuan untuk memvalidasi fungsionalitas antarmuka dan alur kerja (workflow) pada Admin Panel **Bujang Cafe** tanpa melihat struktur kode internal program. Pengujian berfokus pada:
-1. **Keamanan Hak Akses (Role-Based Access Control / RBAC)** antara peran Kasir dan Manager.
-2. **Efisiensi Alur Kasir (1-Click Payment Confirmation)** dari status *Pending* langsung ke *Diproses*.
-3. **Akurasi Perhitungan Uang & Kembalian** pada Modal Kasir (Kalkulator POS).
-4. **Pencetakan Struk Termal (58mm/80mm)** baik untuk Struk Pelanggan maupun Tiket Dapur (KOT).
-5. **Sinkronisasi Real-Time (Socket.IO & Audio Alert)** saat pesanan baru masuk.
-6. **Kontrol Ketersediaan Menu & Meja** secara operasional langsung dari meja kasir.
+| Peran | Email | Password | Redirect Default |
+|---|---|---|---|
+| **Kasir** | `kasir@bujangcafe.com` | `kasir12345` | `/orders` |
+| **Manager** | `manager@bujangcafe.com` | `manager12345` | `/dashboard` |
 
 ---
 
-## 2. MATRIKS KASUS UJI (TEST CASES)
+## Temuan Static Code Analysis (Bug & Potensi Masalah)
 
-### Modul 1: Autentikasi & Hak Akses Berbasis Peran (RBAC)
+> Temuan ini diperoleh dari analisis mendalam kode admin panel sebelum pengujian manual.
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-AUTH-01** | Login dengan kredensial salah | Masukkan email/password yang salah lalu klik tombol "Masuk" | Email: `kasir@bujangcafe.com`<br>Password: `salah123` | Sistem menolak login, menampilkan pesan peringatan *"Password salah atau akun tidak terdaftar"*, tetap di halaman login. | Sesuai ekspektasi, toast error muncul dan form tidak lanjut ke dashboard. | **VALID** |
-| **TC-AUTH-02** | Login sebagai Kasir | Masukkan akun Kasir yang valid dan klik "Masuk" | Email: `kasir@bujangcafe.com`<br>Password: `kasir12345` | Login berhasil, token JWT tersimpan, sistem secara otomatis mengarahkan Kasir langsung ke halaman operasional `/orders` (*Semua Pesanan*). | Sesuai ekspektasi, user diarahkan ke `/orders` dengan badge "Akses: Kasir". | **VALID** |
-| **TC-AUTH-03** | Login sebagai Manager | Masukkan akun Manager yang valid dan klik "Masuk" | Email: `manager@bujangcafe.com`<br>Password: `manager12345` | Login berhasil, sistem mengarahkan Manager ke halaman ringkasan eksekutif `/dashboard`. | Sesuai ekspektasi, diarahkan ke `/dashboard` dengan badge "Akses: Manager". | **VALID** |
-| **TC-AUTH-04** | Proteksi Rute: Kasir mencoba akses URL `/dashboard` | Login sebagai Kasir, kemudian ketik URL `http://localhost:5173/dashboard` di address bar | Navigasi URL: `/dashboard` | Akses ditolak oleh `ProtectedRoute`, Kasir dialihkan kembali ke `/orders`, muncul toast peringatan *"Akses Terbatas: Hanya Manager yang dapat melihat ringkasan performa bisnis"*. | Sesuai ekspektasi, rute diblokir dan Kasir dialihkan ke `/orders`. | **VALID** |
-| **TC-AUTH-05** | Sidebar Navigation Gating untuk Kasir | Amati menu sidebar saat login sebagai Kasir | Peran: `kasir` | Menu "Dashboard" tidak ditampilkan pada sidebar. Hanya menu *Semua Pesanan*, *Kelola Meja*, dan *Daftar Menu* yang tampil. | Sesuai ekspektasi, link dashboard tersembunyi sepenuhnya untuk kasir. | **VALID** |
-| **TC-AUTH-06** | Logout Akun | Klik tombol "Keluar" pada dropdown profil | Klik `Logout` | Sesi berakhir, token JWT dihapus dari `localStorage`, pengguna dialihkan kembali ke halaman `/login`. | Sesuai ekspektasi, token terhapus dan kembali ke login. | **VALID** |
+### BUG-A-01 — Admin Login: Redirect Bergantung `result.data?.user?.role` yang Tidak Ada (KRITIKAL)
 
----
+**Lokasi**: `Login.jsx` baris 48-56
 
-### Modul 2: Operasional Pesanan Kasir & Kitchen Display System (KDS)
+```javascript
+if (result.success) {
+  const userRole = result.data?.user?.role;  // <- result.data tidak ada!
+  if (location.state?.from?.pathname) {
+    navigate(location.state.from.pathname, { replace: true });
+  } else if (userRole === 'kasir' || userRole === 'kitchen') {
+    navigate('/orders', { replace: true });
+  } else {
+    navigate('/dashboard', { replace: true });  // <- Selalu ke sini
+  }
+}
+```
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-ORD-01** | Visualisasi Tiket Pesanan Aktif | Masuk ke menu "Pesanan Aktif" saat ada pesanan masuk dari meja pelanggan | Data pesanan masuk | Menampilkan kartu pesanan dengan nomor meja, nama pemesan, nomor faktur, rincian item, total harga, dan timer durasi tunggu (menit/detik) yang berjalan real-time. | Sesuai ekspektasi, kartu tiket tampil rapi dengan timer aktif. | **VALID** |
-| **TC-ORD-02** | Filter Tab Pesanan Aktif | Klik tab filter status pada bagian atas (*Semua*, *Menunggu Konfirmasi*, *Sedang Dimasak*, *Siap Saji*) | Klik pill filter status | Daftar pesanan terfilter secara instan hanya menampilkan pesanan sesuai status yang dipilih tanpa me-reload halaman. | Sesuai ekspektasi, pesanan langsung tersaring sesuai filter status. | **VALID** |
-| **TC-ORD-03** | Pencarian Pesanan | Ketik nomor meja, nama pelanggan, atau nomor faktur pada search bar | Input: `"Meja 3"` atau `"Budi"` | Kartu pesanan otomatis tersaring menampilkan pesanan yang sesuai kata kunci pencarian. | Sesuai ekspektasi, pencarian real-time berfungsi responsif. | **VALID** |
-| **TC-ORD-04** | Pembatalan Pesanan (*Void Order*) | Klik tombol "Batalkan" pada tiket pesanan dan konfirmasi dialog | Klik `Batalkan` $\to$ Konfirmasi OK | Status pesanan diperbarui menjadi `Dibatalkan`, pesanan berpindah dari daftar aktif ke riwayat, meja dibebaskan kembali. | Sesuai ekspektasi, status berubah ke Dibatalkan dan tabel ter-update. | **VALID** |
+**Masalah**: `AuthContext.login()` mengembalikan `{ success: true }` saja (baris 104 AuthContext.jsx), **bukan** `{ success: true, data: { user: { role } } }`. Akibatnya `result.data` selalu `undefined`, dan `userRole` selalu `undefined`.
 
----
+**Dampak**: Semua user (baik kasir maupun manager) selalu di-redirect ke `/dashboard` setelah login berhasil (bukan kasir ke `/orders`). Namun karena ProtectedRoute memblokir kasir dari `/dashboard` dan redirect ke `/orders`, secara efektif kasir tetap sampai ke `/orders` — hanya melalui redirect dua kali (inefficiency, bukan crash).
 
-### Modul 3: Kalkulator Kasir & Alur Konfirmasi Pembayaran (1-Click POS)
-
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-PAY-01** | Pembukaan Modal Kasir dari Tiket Pending | Pada pesanan berstatus *Menunggu Konfirmasi*, klik tombol utama `[ 💵 Konfirmasi Pembayaran → ]` | Klik tombol tiket | Modal pembayaran terbuka, input uang tunai otomatis terfokus (*auto-focus*), banner *Total Tagihan* menampilkan nominal tagihan yang bersih (slate neutral). | Sesuai ekspektasi, modal kasir terbuka seketika dengan input terfokus. | **VALID** |
-| **TC-PAY-02** | Tombol Preset Pecahan Rupiah | Buka modal pembayaran untuk tagihan Rp 24.000, periksa ketersediaan tombol pecahan | Tagihan: `Rp 24.000` | Tersedia tombol shortcut: `[Uang Pas]`, `[Rp 20.000]`, `[Rp 50.000]`, dan `[Rp 100.000]`. | Sesuai ekspektasi, ke-4 tombol preset pecahan Rupiah tampil rapi. | **VALID** |
-| **TC-PAY-03** | Pembayaran dengan Uang Pas | Klik tombol shortcut `[Uang Pas]` pada modal | Klik `Uang Pas` (Rp 24.000) | Input uang terisi Rp 24.000, banner kembalian menampilkan *"Kembalian: Rp 0"*, tombol "Konfirmasi Pembayaran" aktif (berwarna hijau solid). | Sesuai ekspektasi, kembalian terhitung Rp 0 dan tombol konfirmasi aktif. | **VALID** |
-| **TC-PAY-04** | Pembayaran dengan Uang Lebih (Menghitung Kembalian) | Masukkan uang tunai Rp 50.000 untuk tagihan Rp 24.000 | Tunai: `50000` | Banner kembalian hijau menampilkan *"KEMBALIAN KASIR: Rp 26.000"*, tombol "Konfirmasi Pembayaran" aktif. | Sesuai ekspektasi, kalkulasi `50.000 - 24.000 = 26.000` tampil akurat. | **VALID** |
-| **TC-PAY-05** | Validasi Uang Kurang | Masukkan uang tunai Rp 20.000 untuk tagihan Rp 24.000 | Tunai: `20000` | Muncul banner peringatan kuning/oranye: *"Uang Tunai Kurang: Rp 4.000"*, tombol "Konfirmasi Pembayaran" otomatis di-disable (tidak dapat diklik). | Sesuai ekspektasi, tombol submit terkunci sehingga kasir tidak dapat meloloskan pembayaran kurang. | **VALID** |
-| **TC-PAY-06** | Input Uang Nol atau Kosong | Kosongkan input uang tunai atau ketik `0` | Tunai: `0` atau kosong | Tombol konfirmasi tetap nonaktif (*disabled*), mencegah error pengiriman data kosong ke server. | Sesuai ekspektasi, validasi mencegah pengiriman data tidak valid. | **VALID** |
-| **TC-PAY-07** | Transisi Status Atomik (1-Click Confirm & Cook) | Klik "Konfirmasi Pembayaran" pada pesanan status *Pending* | Klik Konfirmasi | Dalam 1 panggilan API atomik `/api/order/payment`: status pembayaran menjadi `Lunas (Tunai)`, status pesanan maju ke `Diproses` (Dapur), tiket berpindah antrean, struk siap cetak. | Sesuai ekspektasi, kasir tidak perlu klik dua kali untuk mengubah status ke memasak. | **VALID** |
+**Konfirmasi**: Cek di testing apakah kasir langsung ke `/dashboard` (redirect sekali) atau ada flash sebelum ke `/orders` (redirect dua kali).
 
 ---
 
-### Modul 4: Pencetakan Struk Termal (58mm / 80mm) & Tiket Dapur (KOT)
+### BUG-A-02 — `handleCancelOrder` Menggunakan `window.confirm` (UX Inkonsisten)
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-PRN-01** | Buka Modal Struk Transaksi | Klik tombol `[ Struk ]` pada kartu tiket atau tabel riwayat | Klik tombol struk | Modal struk terbuka dengan dua tab pilihan: **Struk Pelanggan** dan **Tiket Dapur (KOT)**. | Sesuai ekspektasi, modal struk terbuka dengan pratinjau kertas termal. | **VALID** |
-| **TC-PRN-02** | Validasi Tampilan Struk Pelanggan | Buka tab *Struk Pelanggan* pada pesanan tunai | Pesanan lunas tunai | Menampilkan nama kafe, nomor faktur, nomor meja, daftar menu & harga, subtotal, diskon, Total, Tunai Diterima, Kembalian (warna netral abu-abu tua, tidak hijau mencolok), dan Catatan pesanan berlatar netral. | Sesuai ekspektasi, warna kembalian dan catatan tampil profesional dalam warna netral. | **VALID** |
-| **TC-PRN-03** | Validasi Keselarasan Tiket Dapur (KOT) | Buka tab *Tiket Dapur (KOT)* | Tiket Dapur | Badge jumlah porsi `[ 1x ]` dan nama menu (misal: *Grilled Sandwich*) berada pada **posisi sejajar horizontal 100% presisi**, kategori menu berada rapi di bawahnya dengan indentasi yang pas. | Sesuai ekspektasi, nomor porsi dan nama menu sejajar sempurna. | **VALID** |
-| **TC-PRN-04** | Eksekusi Print Termal (`window.print`) | Klik tombol merah `[ Cetak Struk ]` | Klik Cetak Struk | Dialog cetak peramban terbuka dengan CSS `@media print` khusus termal (hanya kertas struk yang dicetak, elemen latar belakang & tombol modal otomatis tersembunyi). | Sesuai ekspektasi, dialog cetak terbuka bersih tanpa elemen UI yang bocor. | **VALID** |
+**Lokasi**: `Orders.jsx` baris 229-234
 
----
+```javascript
+const handleCancelOrder = (orderId, invoiceNumber) => {
+  if (window.confirm(`Batalkan ${invoiceNumber}?...`)) {  // <- window.confirm, bukan SweetAlert/Toast
+    handleStatusChange(orderId, 'Dibatalkan');
+  }
+};
+```
 
-### Modul 5: Kontrol Stok Menu & Katalog (Hak Kasir vs Manager)
+**Masalah**: Fungsi pembatalan pesanan di halaman admin menggunakan `window.confirm()` bawaan browser — berbeda dengan seluruh komponen lain yang menggunakan SweetAlert2 atau React-Toastify. Tampilan `window.confirm` tidak bisa di-style dan tidak konsisten dengan desain UI.
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-STK-01** | Toggle Stok 1-Klik oleh Kasir | Login sebagai Kasir, buka menu `/list`, klik tombol status stok menu | Klik tombol `Tersedia` $\to$ ubah ke `Stok Habis` | Status ketersediaan menu langsung berubah menjadi "Stok Habis" tanpa reload, menu di aplikasi pelanggan otomatis tidak bisa dipesan. | Sesuai ekspektasi, toggle ketersediaan berfungsi instan untuk kasir. | **VALID** |
-| **TC-STK-02** | Proteksi Tambah Menu untuk Kasir | Buka halaman `/list` dengan akun Kasir | Peran: `kasir` | Tombol "+ Tambah Menu Baru" disembunyikan dari antarmuka Kasir, badge mode menampilkan *"Mode Kasir (Kontrol Stok)"*. | Sesuai ekspektasi, tombol tambah menu tidak muncul untuk akun kasir. | **VALID** |
-| **TC-STK-03** | Proteksi Edit Harga & Hapus Menu untuk Kasir | Periksa kolom aksi pada tabel menu saat login sebagai Kasir | Peran: `kasir` | Tombol Edit (pensil) dan Hapus (tong sampah) digantikan dengan badge informatif *"Khusus Manager"*. | Sesuai ekspektasi, kasir tidak dapat mengubah harga maupun menghapus menu. | **VALID** |
-| **TC-STK-04** | Akses Penuh Katalog untuk Manager | Login sebagai Manager, buka halaman `/list` | Peran: `manager` | Tombol "+ Tambah Menu" tampil aktif, modal edit harga/deskripsi/gambar dan tombol hapus menu dapat diakses penuh. | Sesuai ekspektasi, seluruh hak kurasi katalog terbuka untuk manager. | **VALID** |
+**Dampak**: Low-Medium — fungsional bekerja, namun UX inkonsisten.
 
 ---
 
-### Modul 6: Manajemen Meja & QR Code
+### BUG-A-03 — Dashboard: `BACKEND_URL` didefinisikan tapi Tidak Digunakan
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-TBL-01** | Monitoring Status Keterisian Meja | Buka halaman `/tables` saat ada pesanan aktif di Meja 3 | Pesanan aktif di meja 3 | Meja 3 menampilkan status **"Terisi" (Occupied)** berwarna amber/oranye lengkap dengan total tagihan aktif dan pemesan. Meja tanpa pesanan berstatus **"Kosong" (Available)** berwarna hijau. | Sesuai ekspektasi, status meja sinkron dengan aktivitas pesanan. | **VALID** |
-| **TC-TBL-02** | Generate & Pratinjau QR Code Meja | Klik tombol "Lihat QR" pada kartu Meja 5 | Klik Lihat QR | Modal QR Code terbuka menampilkan QR Code meja dengan link pemesanan otomatis terisi nomor meja terkait. | Sesuai ekspektasi, QR Code ter-render sempurna dengan nomor meja yang tepat. | **VALID** |
-| **TC-TBL-03** | Unduh QR Code (*Download PNG*) | Klik tombol "Unduh QR Code" pada modal QR | Klik Unduh | Berkas gambar PNG QR Code meja berhasil diunduh ke komputer kasir dengan nama berkas yang rapi (`qr-meja-5.png`). | Sesuai ekspektasi, file gambar QR terunduh dengan resolusi tajam. | **VALID** |
+**Lokasi**: `Dashboard.jsx` baris 23
 
----
+```javascript
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;  // Tidak pernah dipakai
+```
 
-### Modul 7: Riwayat Pesanan & Rekap Finansial Harian Kasir
+**Masalah**: `BACKEND_URL` didefinisikan sebagai constant namun tidak digunakan di manapun di Dashboard.jsx. Semua API call sudah menggunakan `api` service (`api.get('/api/...')`).
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-REP-01** | Filter Riwayat Hari Ini (*Today Filter*) | Buka tab "Riwayat Pesanan", klik pill shortcut `[ Hari Ini ]` | Klik Hari Ini | Tabel riwayat secara instan hanya menampilkan transaksi yang diselesaikan pada hari ini. | Sesuai ekspektasi, filter tanggal otomatis mengunci ke tanggal hari ini. | **VALID** |
-| **TC-REP-02** | Banner Ringkasan Kas & QRIS | Amati banner ringkasan di atas tabel saat filter *Hari Ini* aktif | Filter hari ini aktif | Menampilkan kartu: Total Pendapatan, Pesanan Berhasil, serta badge rincian terpisah: **Tunai (Cash In)** dan **QRIS**. | Sesuai ekspektasi, kasir dapat langsung mencocokkan fisik uang laci dari tag Tunai. | **VALID** |
-| **TC-REP-03** | Filter Rentang Tanggal Kustom | Pilih tanggal mulai dan tanggal akhir pada pemilih tanggal | Tanggal Mulai & Tanggal Akhir | Data tabel dan kartu ringkasan otomatis mengkalkulasi ulang data sesuai rentang tanggal yang dipilih. | Sesuai ekspektasi, ringkasan dan tabel menyesuaikan rentang tanggal. | **VALID** |
-| **TC-REP-04** | Proteksi Export Excel CSV | Periksa tombol "Export Excel" pada header saat login sebagai Kasir | Peran: `kasir` | Tombol "Export Excel" disembunyikan dari Kasir untuk melindungi ekspor data finansial massal (hanya tampil untuk Manager). | Sesuai ekspektasi, tombol export CSV hanya ada saat login Manager. | **VALID** |
+**Dampak**: Low — dead code, tidak ada dampak fungsional. Perlu dibersihkan.
 
 ---
 
-### Modul 8: Notifikasi Real-Time Socket.IO & Audio Alert
+### BUG-A-04 — Fitur Kosongkan Meja: SUDAH DIPERBAIKI
 
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-NOTIF-01** | Notifikasi Suara (*Audio Chime*) Pesanan Baru | Buka halaman pesanan kasir, lakukan pemesanan dari smartphone / tab pelanggan | Pesanan baru dibuat | Speaker kasir membunyikan nada lonceng dua nada (*two-tone chime D5-A5*), muncul toast notifikasi hijau `"🔔 Pesanan Baru: Meja X (Rp Y)!"`, tiket baru langsung muncul tanpa refresh. | Sesuai ekspektasi, nada lonceng berbunyi dan pesanan baru langsung muncul. | **VALID** |
-| **TC-NOTIF-02** | Toggle Mute/Unmute Suara Kasir | Klik tombol `[ Suara: Aktif ]` di header kanan atas | Klik tombol suara | Suara berubah menjadi `[ Suara: Mati ]`, muncul **satu** toast konfirmasi tanpa duplikasi. Preferensi tersimpan di `localStorage`. | Sesuai ekspektasi, suara berhasil dibisukan dan toast muncul sekali. | **VALID** |
-| **TC-NOTIF-03** | Sinkronisasi Multi-Tab (*Broadcast Sync*) | Buka Admin Panel pada dua jendela peramban berdampingan. Ubah status pesanan di jendela 1 | Update pesanan di Jendela 1 | Jendela 2 secara otomatis memperbarui tampilan tanpa perlu menekan tombol F5 (Sinkron melalui event storage & socket). | Sesuai ekspektasi, kedua jendela sinkron secara real-time. | **VALID** |
+**Lokasi**: `Tables.jsx` — diperbaiki pada 26 September 2026
 
----
+**Perbaikan**: Mengganti `axios.post` (yang tidak diimpor) dengan `api.post` dari service terpusat. Sekarang auth token otomatis disertakan dan error "Gagal mengosongkan meja" tidak lagi muncul.
 
-### Modul 9: Dashboard Eksekutif & Analitik Bisnis (Khusus Peran Manager)
-
-| Kode Uji | Skenario Pengujian | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Pengujian | Status |
-| :---: | :--- | :--- | :--- | :--- | :--- | :---: |
-| **TC-DASH-01** | Visualisasi Kartu KPI Finansial Utama | Login sebagai Manager, amati 4 kartu metrik utama di bagian atas dashboard | Peran: `manager` | Menampilkan metrik akurat: Total Pendapatan (Rp), Jumlah Pesanan Selesai, Rata-rata Nilai Transaksi (AOV), dan Menu Terlaris beserta persentase tren pertumbuhan dibanding periode sebelumnya. | Sesuai ekspektasi, kartu metrik KPI tampil presisi dan informatif. | **VALID** |
-| **TC-DASH-02** | Interaktivitas Grafik Tren Pendapatan | Arahkan kursor (*hover*) pada grafik penjualan harian | Hover titik/batang grafik | Muncul kartu tooltip interaktif yang menampilkan tanggal, nominal pendapatan hari tersebut, dan jumlah pesanan secara detail. | Sesuai ekspektasi, tooltip grafik responsif dan informatif. | **VALID** |
-| **TC-DASH-03** | Pengalihan Mode Grafik (Bar Chart vs Area Chart) | Klik tombol alih tampilan grafik di pojok kanan atas grafik | Klik ikon Bar / Area | Grafik beralih secara instan dan mulus antara diagram batang (*Bar Chart*) dan diagram area garis (*Area Chart*). | Sesuai ekspektasi, visualisasi grafik berganti tanpa error rendering. | **VALID** |
-| **TC-DASH-04** | Filter Periode Analitik Bisnis | Pilih opsi rentang waktu (*Hari Ini*, *7 Hari*, *30 Hari*, *Bulan Ini*, *Semua Data*) | Klik dropdown filter periode | Seluruh kartu metrik, grafik tren pendapatan, dan daftar menu terlaris otomatis mengkalkulasi ulang data sesuai rentang waktu yang dipilih. | Sesuai ekspektasi, kalkulasi analitik sinkron dengan filter periode. | **VALID** |
-| **TC-DASH-05** | Analisis Jam Sibuk Kafe (*Peak Hours*) | Gulir ke bagian analisis jam sibuk pada dashboard | Data historis transaksi | Menampilkan diagram sebaran waktu pemesanan (jam makan siang 11:00-14:00 dan jam makan malam 18:00-21:00) untuk membantu manager menyusun jadwal staf (*shift planning*). | Sesuai ekspektasi, jam sibuk teridentifikasi dengan jelas. | **VALID** |
-| **TC-DASH-06** | Tambah Menu Baru dengan Gambar (*Add Food*) | Pada halaman `/list`, klik tombol "+ Tambah Menu", isi form & upload foto, lalu klik "Simpan Menu" | Form menu baru & file gambar | Menu baru tersimpan di database MongoDB, foto terunggah, menu langsung muncul di daftar katalog dan aplikasi pemesanan pelanggan. | Sesuai ekspektasi, menu baru berhasil ditambahkan dan tampil di katalog. | **VALID** |
-| **TC-DASH-07** | Edit Informasi & Harga Menu (*Edit Food*) | Klik ikon pensil pada salah satu menu di `/list`, ubah harga atau deskripsi, klik "Perbarui" | Update harga menu | Informasi menu berhasil diperbarui di database, muncul notifikasi sukses, harga baru langsung berlaku real-time. | Sesuai ekspektasi, harga ter-update secara akurat. | **VALID** |
-| **TC-DASH-08** | Hapus Menu dari Katalog (*Delete Food*) | Klik ikon tempat sampah pada menu, lalu konfirmasi dialog hapus | Konfirmasi Hapus OK | Menu berhasil dihapus dari database, daftar menu langsung ter-refresh dan menghapus kartu menu tersebut. | Sesuai ekspektasi, menu berhasil dihapus dari katalog. | **VALID** |
+**Status**: ✅ FIXED — Perlu diverifikasi via manual testing (TC-A-TBL-04 dan TC-A-TBL-05).
 
 ---
 
-## 3. RINGKASAN HASIL PENGUJIAN (TEST RESULTS SUMMARY)
+### INFO — RBAC Backend: `requireRoles` Hanya pada Food Routes
 
-| Modul Pengujian | Target Peran | Jumlah Kasus Uji | Valid | Gagal | Tingkat Kelulusan |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **1. Autentikasi & RBAC** | Kasir & Manager | 6 | 6 | 0 | 100% |
-| **2. Operasional Pesanan (KDS)** | Kasir & Manager | 4 | 4 | 0 | 100% |
-| **3. Kalkulator Kasir & POS** | Kasir | 7 | 7 | 0 | 100% |
-| **4. Pencetakan Struk Termal & KOT** | Kasir | 4 | 4 | 0 | 100% |
-| **5. Kontrol Stok Menu** | Kasir & Manager | 4 | 4 | 0 | 100% |
-| **6. Manajemen Meja & QR** | Kasir & Manager | 3 | 3 | 0 | 100% |
-| **7. Riwayat & Rekap Kas** | Kasir & Manager | 4 | 4 | 0 | 100% |
-| **8. Real-Time Socket & Audio** | Kasir & Manager | 3 | 3 | 0 | 100% |
-| **9. Dashboard & Analitik Eksekutif** | **Khusus Manager** | 8 | 8 | 0 | 100% |
-| **TOTAL KESELURUHAN** | **Keduanya (Kasir + Manager)** | **43 Kasus Uji** | **43** | **0** | **100% (SEMPURNA)** |
+**Lokasi**: `foodRoute.js` baris 8, 11, 20
+
+Hanya route `food/add`, `food/update`, dan `food/remove` yang menggunakan middleware `requireRoles('manager', 'admin')`. Route `food/toggle-availability` hanya membutuhkan `authMiddleware` (kasir boleh toggle). Route `/api/order/status` juga tidak dilindungi `requireRoles` — artinya kasir juga bisa mengubah status pesanan melalui direct API call, namun UI admin sudah membatasi hal ini di frontend.
 
 ---
 
-## 4. KESIMPULAN PENGUJIAN UNTUK TUGAS AKHIR
+## 1. Modul Autentikasi & RBAC Admin
 
-Berdasarkan hasil pengujian *Black-Box Testing* terhadap **43 kasus uji fungsional** yang mencakup peran **Kasir** dan **Manager**:
-1. **Pemisahan Peran & Keamanan Sistem (RBAC)**: Terbukti 100% efektif. Kasir memiliki akses operasional penuh untuk kelancaran layanan di meja kasir, namun dibatasi secara ketat dari melihat pendapatan kotor toko, analitik eksekutif, maupun mengubah harga katalog menu.
-2. **Keandalan Kasir (POS & Kitchen)**: Kalkulator kasir dengan tombol pecahan cepat (`Uang Pas`, `Rp 20.000`, `Rp 50.000`, `Rp 100.000`), validasi uang kurang, dan alur 1-klik terbukti memangkas waktu pelayanan dan otomatis memajukan antrean dapur.
-3. **Pengambilan Keputusan Manager**: Dashboard eksekutif menyediakan visualisasi metrik performa (omzet, AOV, tren grafik, jam sibuk, dan kontrol penuh kurasi menu) yang akurat dan tersinkronisasi langsung dengan basis data MongoDB.
-4. **Keseluruhan sistem telah lulus pengujian fungsional dengan tingkat kelulusan 100% (Valid)** dan siap dipertanggungjawabkan dalam sidang Tugas Akhir.
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-AUTH-01** | Login dengan kredensial salah | Buka `/login` → isi email/password salah → klik "Masuk ke Panel Admin" | Email: `salah@test.com`, Pass: `salah123` | Toast error muncul, form tidak lanjut, tetap di halaman login | | |
+| **TC-A-AUTH-02** | Login dengan form kosong | Klik submit tanpa isi email/password | (kosong) | Browser HTML5 validation mencegah submit | | |
+| **TC-A-AUTH-03** | Login sebagai Kasir | Isi akun Kasir valid → klik "Masuk" | Email: `kasir@bujangcafe.com`, Pass: `kasir12345` | Login berhasil, toast sukses, diarahkan ke `/orders` | | |
+| **TC-A-AUTH-04** | Login sebagai Manager | Isi akun Manager valid → klik "Masuk" | Email: `manager@bujangcafe.com`, Pass: `manager12345` | Login berhasil, toast sukses, diarahkan ke `/dashboard` | | |
+| **TC-A-AUTH-05** | RBAC: Kasir akses URL `/dashboard` | Login sebagai Kasir → ketik `http://localhost:5174/dashboard` | URL: `/dashboard` | Diblokir oleh ProtectedRoute, redirect ke `/orders` | | |
+| **TC-A-AUTH-06** | RBAC: Sidebar tanpa menu Dashboard untuk Kasir | Login sebagai Kasir → amati sidebar | Peran: kasir | Menu "Dashboard" tidak tampil di sidebar, hanya ada Daftar Menu, Semua Pesanan, Meja & QR | | |
+| **TC-A-AUTH-07** | RBAC: Sidebar lengkap untuk Manager | Login sebagai Manager → amati sidebar | Peran: manager | Semua menu tampil: Dashboard, Daftar Menu, Semua Pesanan, Meja & QR | | |
+| **TC-A-AUTH-08** | Logout Admin | Klik tombol Logout dari dropdown profil/navbar | Klik Logout | Toast info "Anda telah keluar", token dihapus dari localStorage/sessionStorage, redirect ke `/login` | | |
+| **TC-A-AUTH-09** | Session persistence (Remember Me) | Login dengan "Ingat sesi saya" centang → tutup browser → buka lagi | Checkbox tercentang | Saat browser dibuka kembali, user masih login (token di localStorage) | | |
+| **TC-A-AUTH-10** | Session tanpa Remember Me | Login dengan "Ingat sesi saya" tidak dicentang → tutup tab → buka tab baru | Checkbox kosong | User sudah logout (token hanya di sessionStorage, hilang saat tab/browser ditutup) | | |
 
+---
+
+## 2. Modul Dashboard & Analitik Bisnis (Khusus Manager)
+
+### Langkah Pre-Test
+1. Login sebagai Manager
+2. Buka `http://localhost:5174/dashboard`
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-DASH-01** | Tampilkan 4 kartu KPI utama | Buka dashboard, amati kartu metrik | Peran: manager | 4 kartu tampil: Total Pendapatan, Jumlah Pesanan Selesai, AOV (rata-rata transaksi), Menu Terlaris | | |
+| **TC-A-DASH-02** | Filter periode "Hari Ini" | Klik pill "Hari Ini" | Klik | Data berubah ke transaksi hari ini, grafik dan kartu KPI ter-update | | |
+| **TC-A-DASH-03** | Filter periode "7 Hari Terakhir" | Klik pill "7 Hari Terakhir" | Klik | Data 7 hari tampil | | |
+| **TC-A-DASH-04** | Filter periode "30 Hari Terakhir" | Klik pill "30 Hari Terakhir" | Klik | Data 30 hari tampil, chart mode berubah ke Area Chart otomatis | | |
+| **TC-A-DASH-05** | Filter periode "Bulan Ini" | Klik pill "Bulan Ini" | Klik | Data bulan ini tampil | | |
+| **TC-A-DASH-06** | Filter "Semua Data" | Klik pill "Semua Data" | Klik | Semua data historis dimuat | | |
+| **TC-A-DASH-07** | Toggle Bar Chart / Area Chart | Klik tombol toggle mode grafik di sudut kanan grafik | Klik toggle | Grafik berganti antara Bar Chart dan Area Chart dengan mulus | | |
+| **TC-A-DASH-08** | Hover tooltip pada grafik | Arahkan kursor ke titik/batang pada grafik | Hover | Tooltip interaktif muncul dengan tanggal, pendapatan, dan jumlah pesanan | | |
+| **TC-A-DASH-09** | Tampilkan menu terlaris | Scroll ke bagian menu terlaris | — | Daftar menu terlaris dengan jumlah terjual tampil | | |
+| **TC-A-DASH-10** | Analisis jam sibuk (Peak Hours) | Scroll ke bagian analisis jam sibuk | — | Distribusi waktu pemesanan tampil (misal: jam 11-14 dan 18-21 aktif) | | |
+
+---
+
+## 3. Modul Manajemen Pesanan (KDS — Kitchen Display System)
+
+### Langkah Pre-Test
+1. Login sebagai Kasir atau Manager
+2. Buka `http://localhost:5174/orders`
+3. Pastikan ada pesanan aktif (buat pesanan dari aplikasi customer)
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-ORD-01** | Tampilan tiket pesanan aktif | Buka tab "Pesanan Aktif" | Data pesanan ada | Kartu tiket tampil: nomor meja, nama pemesan, nomor faktur, item menu, total, dan timer waktu tunggu | | |
+| **TC-A-ORD-02** | Filter "Menunggu" | Klik pill "Menunggu" | Klik | Hanya tiket berstatus Pending yang tampil | | |
+| **TC-A-ORD-03** | Filter "Diproses" | Klik pill "Diproses" | Klik | Hanya tiket berstatus Diproses yang tampil | | |
+| **TC-A-ORD-04** | Filter "Sedang Santap" | Klik pill "Sedang Santap" | Klik | Hanya tiket berstatus Disajikan yang tampil | | |
+| **TC-A-ORD-05** | Pencarian pesanan by meja | Ketik "Meja 3" di search bar | `Meja 3` | Hanya tiket dari Meja 3 yang tampil | | |
+| **TC-A-ORD-06** | Pencarian pesanan by nama pemesan | Ketik nama customer di search | Nama customer | Tiket pesanan dari customer tersebut tampil | | |
+| **TC-A-ORD-07** | Expand/collapse menu items pada tiket | Klik tiket untuk buka detail menu item | Klik tiket | Daftar item pesanan (nama menu, qty, harga) tampil saat di-expand | | |
+| **TC-A-ORD-08** | "Buka Semua" expand | Klik tombol "Buka Semua" | Klik | Semua tiket di halaman ter-expand sekaligus | | |
+| **TC-A-ORD-09** | Update status: Pending → Diproses | Klik tombol "Konfirmasi & Masak →" pada tiket Pending (SUDAH BAYAR) | Klik tombol | Status berubah ke Diproses, toast sukses muncul, tiket berpindah filter | | |
+| **TC-A-ORD-10** | Update status: Diproses → Disajikan | Klik "Sajikan ke Meja →" pada tiket Diproses | Klik tombol | Status berubah ke Disajikan, tiket ke filter Sedang Santap | | |
+| **TC-A-ORD-11** | Update status: Disajikan → Selesai | Klik "Selesaikan & Kosongkan Meja" pada tiket Disajikan | Klik tombol | Status berubah ke Selesai, tiket pindah ke tab Riwayat Pesanan | | |
+| **TC-A-ORD-12** | Batalkan pesanan via window.confirm | Klik tombol "Batalkan" pada tiket → klik OK di dialog | Konfirmasi OK | Status berubah ke Dibatalkan, tiket pindah ke Riwayat | | |
+| **TC-A-ORD-13** | Filter Riwayat "Hari Ini" | Beralih ke tab Riwayat → klik "Hari Ini" | Klik | Hanya transaksi hari ini tampil | | |
+| **TC-A-ORD-14** | Filter Riwayat berdasarkan rentang tanggal | Isi tanggal mulai dan akhir pada filter tanggal | Tanggal kustom | Data terfilter sesuai rentang tanggal | | |
+| **TC-A-ORD-15** | Export Excel (Manager only) | Login sebagai Manager → klik "Export Excel" | Klik | File CSV terunduh ke komputer | | |
+| **TC-A-ORD-16** | Export Excel tersembunyi untuk Kasir | Login sebagai Kasir → cek header | Peran: kasir | Tombol "Export Excel" tidak tampil | | |
+
+---
+
+## 4. Modul Kalkulator Kasir & Konfirmasi Pembayaran
+
+### Langkah Pre-Test
+1. Ada pesanan berstatus "Pending" di halaman /orders
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-PAY-01** | Buka modal dari tiket Pending | Klik tombol "💵 Konfirmasi Pembayaran →" | Klik tombol | Modal kasir terbuka, input uang tunai auto-focus, total tagihan tampil | | |
+| **TC-A-PAY-02** | Tombol preset denominasi Rupiah | Periksa tombol di modal untuk tagihan Rp 24.000 | Tagihan: Rp 24.000 | Tersedia: Uang Pas, Rp 20.000, Rp 50.000, Rp 100.000 | | |
+| **TC-A-PAY-03** | Klik "Uang Pas" | Klik tombol shortcut "Uang Pas" | Klik Uang Pas | Input terisi sejumlah tagihan, kembalian = Rp 0, tombol konfirmasi aktif (hijau) | | |
+| **TC-A-PAY-04** | Pembayaran lebih dari tagihan | Masukkan uang tunai > tagihan (misal: Rp 50.000 untuk tagihan Rp 24.000) | Tunai: 50000 | Kembalian terhitung: Rp 26.000, tombol konfirmasi aktif | | |
+| **TC-A-PAY-05** | Pembayaran kurang dari tagihan | Masukkan uang tunai < tagihan (misal: Rp 20.000 untuk Rp 24.000) | Tunai: 20000 | Peringatan "Uang kurang Rp 4.000", tombol konfirmasi disabled | | |
+| **TC-A-PAY-06** | Input uang = 0 atau kosong | Kosongkan input atau masukkan 0 | Tunai: 0 atau kosong | Tombol konfirmasi tetap disabled | | |
+| **TC-A-PAY-07** | Konfirmasi pembayaran valid (1-Click POS) | Masukkan uang cukup → klik "Konfirmasi Pembayaran" | Tunai: >= tagihan | Status pesanan → Diproses, pembayaran = Lunas, toast sukses. Pesanan otomatis ke dapur | | |
+| **TC-A-PAY-08** | Auto-print struk setelah konfirmasi | Pastikan checkbox "Cetak Struk" aktif → konfirmasi | Checkbox aktif | Modal struk langsung terbuka setelah pembayaran dikonfirmasi | | |
+| **TC-A-PAY-09** | Tutup modal tanpa konfirmasi | Klik X atau area luar modal | Klik X / backdrop | Modal tertutup, tidak ada perubahan status pesanan | | |
+
+---
+
+## 5. Modul Pencetakan Struk & Tiket Dapur (KOT)
+
+### Langkah Pre-Test
+1. Ada pesanan yang sudah dibayar
+2. Klik tombol "Struk" pada tiket pesanan tersebut
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-PRN-01** | Buka modal struk | Klik tombol "Struk" pada tiket pesanan | Klik | Modal struk terbuka dengan 2 tab: "Struk Pelanggan" dan "Tiket Dapur (KOT)" | | |
+| **TC-A-PRN-02** | Validasi isi Struk Pelanggan | Buka tab "Struk Pelanggan" | Tab aktif | Tampil: Nama kafe, No. Faktur, No. Meja, Waktu, daftar menu + harga, Subtotal, Diskon, Total, Tunai Diterima, Kembalian, Catatan | | |
+| **TC-A-PRN-03** | Validasi Tiket Dapur (KOT) | Buka tab "Tiket Dapur (KOT)" | Tab aktif | Badge jumlah `[ 1x ]` dan nama menu sejajar rapi, kategori tampil di bawahnya | | |
+| **TC-A-PRN-04** | Klik Cetak Struk | Klik tombol "Cetak Struk" merah | Klik | Dialog print browser terbuka, hanya area struk yang tampil (elemen modal tersembunyi via @media print) | | |
+| **TC-A-PRN-05** | Tutup modal struk | Klik X atau area luar | Klik | Modal tertutup | | |
+
+---
+
+## 6. Modul Daftar Menu (CRUD Menu)
+
+### Langkah Pre-Test
+1. Buka `http://localhost:5174/list`
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-LIST-01** | Tampilkan daftar menu | Buka halaman /list | — | Tabel/grid menu tampil dengan gambar, nama, kategori, harga, status stok | | |
+| **TC-A-LIST-02** | Pencarian menu by nama | Ketik nama menu di search bar | `ayam` | Hanya menu yang mengandung kata "ayam" ditampilkan | | |
+| **TC-A-LIST-03** | Filter by kategori | Pilih kategori dari dropdown/filter | Kategori tertentu | Hanya menu dari kategori tersebut tampil | | |
+| **TC-A-LIST-04** | Filter stok | Pilih "Stok Habis" dari filter | Filter stok habis | Hanya menu dengan status Stok Habis tampil | | |
+| **TC-A-LIST-05** | Toggle stok (Kasir) — Tersedia ke Stok Habis | Login sebagai Kasir → klik toggle stok pada menu | Klik toggle | Status berubah menjadi "Stok Habis" secara instan (optimistic update), toast sukses | | |
+| **TC-A-LIST-06** | Toggle stok (Kasir) — Stok Habis ke Tersedia | Login sebagai Kasir → klik toggle pada menu Stok Habis | Klik toggle | Status kembali "Tersedia", toast sukses | | |
+| **TC-A-LIST-07** | Tombol Add/Edit/Delete tersembunyi untuk Kasir | Login sebagai Kasir → cek tampilan | Peran: kasir | Tombol "Tambah Menu", edit, dan delete tidak tampil (atau tampil badge "Khusus Manager") | | |
+| **TC-A-LIST-08** | Tambah menu baru (Manager) | Login sebagai Manager → klik "+ Tambah Menu Baru" → isi form → upload gambar → klik "Simpan" | Form baru + gambar | Menu baru tersimpan di database, muncul di daftar, tersedia di customer app | | |
+| **TC-A-LIST-09** | Tambah menu tanpa gambar | Isi form tambah menu tanpa upload gambar | (No image) | Validasi mencegah submit atau backend menolak | | |
+| **TC-A-LIST-10** | Edit menu (Manager) | Klik ikon Edit → ubah harga → klik "Perbarui" | Harga baru | Harga ter-update di database, muncul di daftar dengan harga baru | | |
+| **TC-A-LIST-11** | Hapus menu (Manager) | Klik ikon Hapus → konfirmasi dialog → klik OK | Konfirmasi | Menu terhapus dari database dan hilang dari daftar | | |
+| **TC-A-LIST-12** | Kasir tidak bisa Add/Edit/Delete via direct URL | Login sebagai Kasir → buka `/list?action=add` | URL query | Modal Add tidak terbuka untuk Kasir (terdapat guard `isManager` di code) | | |
+
+---
+
+## 7. Modul Manajemen Meja & QR Code
+
+### Langkah Pre-Test
+1. Login (Kasir atau Manager)
+2. Buka `http://localhost:5174/tables`
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-TBL-01** | Tampilkan status semua meja | Buka /tables | — | Kartu meja tampil dengan status (Kosong/Menunggu/Sedang Dimasak/Makan) dan warna berbeda | | |
+| **TC-A-TBL-02** | Filter tab "Tersedia" | Klik tab "Tersedia" | Klik | Hanya meja berstatus Available/Kosong yang tampil | | |
+| **TC-A-TBL-03** | Filter tab "Sedang Dimasak" | Klik tab "Sedang Dimasak" | Klik | Hanya meja yang pesanannya sedang dimasak yang tampil | | |
+| **TC-A-TBL-04** | Pencarian meja by nomor | Ketik nomor meja di search | `3` | Hanya kartu Meja 3 yang tampil | | |
+| **TC-A-TBL-05** | Tampilkan info pesanan aktif pada meja | Ada pesanan aktif di Meja 3 → lihat kartu | — | Kartu Meja 3 menampilkan status "Terisi", nama pemesan, total tagihan | | |
+| **TC-A-TBL-06** | Buka QR Code meja | Klik tombol "QR Meja" pada kartu | Klik | Modal QR Code terbuka dengan QR yang bisa dipindai, link mengarah ke `/?table=N` | | |
+| **TC-A-TBL-07** | Unduh QR Code PNG | Klik tombol "Unduh QR" di modal | Klik | File PNG QR Code terunduh dengan nama berkas sesuai nomor meja | | |
+| **TC-A-TBL-08** | Sesuaikan jumlah meja (+) | Klik tombol "+" untuk menambah kapasitas meja | Klik + | Jumlah meja bertambah, kartu meja baru muncul | | |
+| **TC-A-TBL-09** | Sesuaikan jumlah meja (-) | Klik tombol "-" untuk mengurangi kapasitas | Klik - | Jumlah meja berkurang (minimal 1) | | |
+
+---
+
+## 8. Modul Kosongkan Meja (Fitur yang Baru Diperbaiki)
+
+> **Catatan**: Bug ini sudah diperbaiki — `axios.post` diganti `api.post` agar auth token otomatis disertakan.
+
+### Langkah Pre-Test
+1. Buat pesanan via customer app pada Meja tertentu
+2. Dari admin /orders, ubah status ke "Disajikan"
+3. Buka /tables — pastikan meja tersebut berstatus "Dining/Makan"
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-CLEAR-01** | Kosongkan Meja berhasil (Happy Path) | Temukan meja berstatus "Makan" → klik tombol "🧹 Kosongkan Meja" | Klik | TIDAK ADA error. Toast sukses "Meja X dikosongkan & status selesai 🧹" muncul dengan tombol "Urungkan" | | |
+| **TC-A-CLEAR-02** | Status pesanan di database berubah ke Selesai | Setelah Kosongkan Meja → cek di /orders tab Riwayat | — | Pesanan muncul di Riwayat dengan status "Selesai" | | |
+| **TC-A-CLEAR-03** | Status meja berubah ke Available | Setelah Kosongkan Meja → lihat kartu meja | — | Kartu meja berubah ke status "Kosong/Available" (hijau) | | |
+| **TC-A-CLEAR-04** | Tombol Urungkan berfungsi dalam 5 detik | Klik "Urungkan" saat toast masih tampil | Klik dalam 5 detik | Status pesanan dikembalikan ke "Disajikan", meja kembali ke status "Makan" | | |
+| **TC-A-CLEAR-05** | Kosongkan Meja dengan multiple pesanan aktif | Meja yang memiliki lebih dari 1 pesanan Disajikan → klik Kosongkan | Multi-order | Semua pesanan Disajikan di meja itu berubah ke "Selesai" sekaligus | | |
+| **TC-A-CLEAR-06** | Tombol Kosongkan Meja tidak muncul di meja Available | Lihat meja berstatus "Kosong" | — | Tombol "Kosongkan Meja" tidak ada, hanya ada tombol "QR Meja" | | |
+| **TC-A-CLEAR-07** | Tombol Kosongkan Meja tidak muncul di meja Pending/Cooking | Lihat meja berstatus "Menunggu" atau "Sedang Dimasak" | — | Tombol "Kosongkan Meja" tidak ada (hanya untuk status Dining) | | |
+
+---
+
+## 9. Modul Notifikasi Real-Time (Socket.IO)
+
+### Langkah Pre-Test
+1. Buka admin panel di satu tab browser
+2. Buka customer app di tab lain (atau device lain)
+
+| Kode Uji | Skenario | Langkah Pengujian | Masukan (Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
+|:---:|:---|:---|:---|:---|:---|:---:|
+| **TC-A-SOCK-01** | Pesanan baru muncul real-time di admin | Customer buat pesanan baru → amati admin /orders | Pesanan baru dari customer | Tiket pesanan baru muncul langsung tanpa refresh, audio chime berbunyi (jika suara aktif), toast info muncul | | |
+| **TC-A-SOCK-02** | Update status pesanan dari admin terlihat di customer | Admin ubah status pesanan → amati customer /myorders | Admin update status | Status badge di kartu pesanan customer berubah otomatis | | |
+| **TC-A-SOCK-03** | Update status meja dari admin ke peta meja | Admin konfirmasi pembayaran → lihat /tables | Admin action | Status meja di /tables berubah otomatis (Pending → Available jika tidak ada pesanan lain) | | |
+| **TC-A-SOCK-04** | Toggle mute/unmute suara kasir | Klik tombol "Suara: Aktif" di header /orders | Klik | Suara berubah ke "Suara: Mati", toast konfirmasi muncul sekali, preferensi tersimpan di localStorage | | |
+| **TC-A-SOCK-05** | Sinkronisasi multi-tab admin | Buka /orders di 2 tab → ubah status di tab 1 | Admin action di tab 1 | Tab 2 otomatis refresh dan menampilkan perubahan | | |
+| **TC-A-SOCK-06** | Badge pesanan aktif di sidebar real-time | Dari customer, buat pesanan baru | Pesanan baru | Badge angka di sidebar menu "Semua Pesanan" bertambah secara real-time | | |
+
+---
+
+## Ringkasan Hasil Pengujian Admin Panel
+
+| Modul | Jumlah TC | Valid | Gagal/Bug | Keterangan |
+|---|:---:|:---:|:---:|---|
+| **1. Autentikasi & RBAC** | 10 | | | |
+| **2. Dashboard & Analitik** | 10 | | | |
+| **3. Manajemen Pesanan (KDS)** | 16 | | | |
+| **4. Kalkulator Kasir & Pembayaran** | 9 | | | |
+| **5. Cetak Struk & KOT** | 5 | | | |
+| **6. Daftar Menu (CRUD)** | 12 | | | |
+| **7. Manajemen Meja & QR** | 9 | | | |
+| **8. Kosongkan Meja (Fix)** | 7 | | | |
+| **9. Real-Time Socket.IO** | 6 | | | |
+| **TOTAL** | **84** | | | |
+
+---
+
+## Daftar Bug Temuan Static Code Analysis
+
+| ID Bug | File | Tingkat | Deskripsi | Status |
+|---|---|:---:|---|:---:|
+| BUG-A-01 | `Login.jsx` L48-56 | Medium | `result.data?.user?.role` selalu undefined — kasir mungkin redirect ke /dashboard dulu sebelum ke /orders | Perlu konfirmasi |
+| BUG-A-02 | `Orders.jsx` L229-234 | Low | `handleCancelOrder` menggunakan `window.confirm()` — inkonsisten dengan UI (seharusnya SweetAlert) | Open |
+| BUG-A-03 | `Dashboard.jsx` L23 | Low | `BACKEND_URL` didefinisikan tapi tidak digunakan — dead code | Open |
+| BUG-A-04 | `Tables.jsx` | — | Kosongkan Meja menggunakan `axios` yang tidak diimport | ✅ FIXED |
+
+---
+
+## Perbandingan Versi Testing Dokumen Admin
+
+| Modul | Pengujian Awal (Sebelum Perbaikan) | Versi Konsolidasi Lengkap (Tugas Akhir) |
+|---|:---:|:---:|
+| Autentikasi & RBAC | 6 TC | 10 TC (+4) |
+| Manajemen Pesanan | 4 TC | 16 TC (+12) |
+| Kasir & Pembayaran | 7 TC | 9 TC (+2) |
+| Cetak Struk | 4 TC | 5 TC (+1) |
+| Daftar Menu | 4 TC | 12 TC (+8) |
+| Manajemen Meja & QR | 3 TC | 9 TC (+6) |
+| **Kosongkan Meja (NEW)** | — | 7 TC (baru) |
+| Dashboard | 8 TC | 10 TC (+2) |
+| Real-Time Socket | 3 TC | 6 TC (+3) |
+| **TOTAL** | **43 TC** | **84 TC (+41)** |

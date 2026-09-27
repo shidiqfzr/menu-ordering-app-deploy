@@ -28,7 +28,6 @@ const Cart = () => {
     token,
     tableNumber,
     setTableNumber,
-    setInvoiceNumber,
   } = useContext(StoreContext);
   const [enteredPromoCode, setEnteredPromoCode] = useState("");
   const [customerInfo, setCustomerInfo] = useState({
@@ -200,12 +199,6 @@ const Cart = () => {
     }
   };
   
-  // Redirect to cart if no items in cart or no token
-  useEffect(() => {
-    if (!token || getTotalCartAmount() === 0) {
-      navigate("/cart");
-    }
-  }, [getTotalCartAmount, navigate, token]);
 
   // Calculate total item count in cart
   const totalItemCount = Object.values(cartItems || {}).reduce(

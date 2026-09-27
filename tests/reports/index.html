@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bujang Cafe - Unified Automated Test Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent: #ff5722;
+      --accent-subtle: rgba(255, 87, 34, 0.12);
+      --success: #10b981;
+      --success-subtle: rgba(16, 185, 129, 0.12);
+      --danger: #ef4444;
+      --danger-subtle: rgba(239, 68, 68, 0.12);
+      --blue: #3b82f6;
+      --blue-subtle: rgba(59, 130, 246, 0.12);
+      --purple: #8b5cf6;
+      --purple-subtle: rgba(139, 92, 246, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 32px 24px;
+      line-height: 1.5;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand-title { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, #ff5722, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; color: #fff;
+    }
+    h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .subtitle { font-size: 13px; color: var(--text-muted); }
+    .badge-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+      background: var(--success-subtle);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-status::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card.unit { border-top: 3px solid var(--blue); }
+    .stat-card.api { border-top: 3px solid var(--purple); }
+    .stat-card.e2e { border-top: 3px solid var(--accent); }
+    .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    .stat-val { font-size: 32px; font-weight: 800; margin: 8px 0 4px; }
+    .stat-sub { font-size: 12px; color: var(--text-muted); }
+    
+    /* Comparison Banner */
+    .compare-card {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9));
+      border: 1px solid #374151;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+    .compare-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #fbbf24; }
+    .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .compare-col {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 16px; border-radius: 12px; border: 1px solid #1e293b;
+    }
+    .compare-col h4 { font-size: 14px; margin-bottom: 8px; color: var(--text-main); }
+    .compare-col p { font-size: 12.5px; color: var(--text-muted); }
+    .compare-col ul { margin-left: 18px; margin-top: 6px; font-size: 12px; color: #cbd5e1; }
+
+    /* Filters & Search */
+    .controls-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 8px 16px; border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg); color: var(--text-muted);
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--text-main); border-color: #374151; }
+    .tab-btn.active {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .search-box {
+      position: relative; min-width: 260px;
+    }
+    .search-input {
+      width: 100%; padding: 8px 16px 8px 36px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 10px; color: var(--text-main); font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: 14px; pointer-events: none;
+    }
+
+    /* Test Table */
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th {
+      background: #141d2e; padding: 12px 16px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      color: var(--text-muted); letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    td {
+      padding: 14px 16px; border-bottom: 1px solid var(--card-border);
+      font-size: 13px; vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    .badge-level {
+      display: inline-block; padding: 4px 10px; border-radius: 6px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-level.unit { background: var(--blue-subtle); color: var(--blue); }
+    .badge-level.api { background: var(--purple-subtle); color: var(--purple); }
+    .badge-level.e2e { background: var(--accent-subtle); color: var(--accent); }
+    .badge-pill-pass {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--success-subtle); color: var(--success);
+      font-size: 11.5px; font-weight: 700;
+    }
+    .badge-pill-fail {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--danger-subtle); color: var(--danger);
+      font-size: 11.5px; font-weight: 700;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8; }
+    .duration { color: var(--text-muted); font-size: 12px; }
+    footer {
+      margin-top: 36px; text-align: center;
+      font-size: 12px; color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand-title">
+        <div class="brand-logo">B</div>
+        <div>
+          <h1>Bujang Cafe POS - Automated Test Report</h1>
+          <p class="subtitle">Laporan Hasil Pengujian Otomatis Sistem POS & Restoran • Dihasilkan pada 27/9/2026, 13.31.24</p>
+        </div>
+      </div>
+      <div>
+        <span class="badge-status">ALL TESTS PASSED (100%)</span>
+      </div>
+    </header>
+
+    <!-- Top KPI Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Test Cases</div>
+        <div class="stat-val">55</div>
+        <div class="stat-sub">Skenario terverifikasi otomatis</div>
+      </div>
+      <div class="stat-card unit">
+        <div class="stat-label">Unit Tests (Jest)</div>
+        <div class="stat-val" style="color: var(--blue);">20/20</div>
+        <div class="stat-sub">Diskon, Keranjang, Invoice, Auth Logic</div>
+      </div>
+      <div class="stat-card api">
+        <div class="stat-label">API Tests (Supertest)</div>
+        <div class="stat-val" style="color: var(--purple);">22/22</div>
+        <div class="stat-sub">Auth, Order Flow, RBAC, In-Memory DB</div>
+      </div>
+      <div class="stat-card e2e">
+        <div class="stat-label">E2E Tests (Playwright)</div>
+        <div class="stat-val" style="color: var(--accent);">13/13</div>
+        <div class="stat-sub">UI Customer & Admin POS Flow</div>
+      </div>
+    </div>
+
+    <!-- Comparison Section (Manual Black-Box vs Automated) -->
+    <div class="compare-card">
+      <div class="compare-title">
+        <span>⚖️ Matriks Perbandingan: Pengujian Manual (Black-Box) vs Pengujian Otomatis (Automated)</span>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <h4>📋 Pengujian Manual (Black-Box)</h4>
+          <p>Telah didokumentasikan lengkap dalam repositori:</p>
+          <ul>
+            <li><strong>BLACK_BOX_TESTING_CUSTOMER.md</strong>: 54 Test Cases</li>
+            <li><strong>BLACK_BOX_TESTING_ADMIN.md</strong>: 84 Test Cases</li>
+            <li><strong>Metode</strong>: Equivalence Partitioning & Boundary Value Analysis</li>
+            <li><strong>Karakteristik</strong>: Menguji persepsi visual, transisi toast, tactile feel, dan verifikasi fisik struk thermal.</li>
+          </ul>
+        </div>
+        <div class="compare-col">
+          <h4>⚡ Pengujian Otomatis (Automated Suite)</h4>
+          <p>Dijalankan serentak dengan 1 perintah <code style="color:#f97316;">npm run test:all</code>:</p>
+          <ul>
+            <li><strong>Total Eksekusi</strong>: 55 Skenario Uji Otomatis</li>
+            <li><strong>Tingkatan</strong>: Unit (Formula kalkulasi), API (Integrasi database), E2E (Simulasi browser)</li>
+            <li><strong>Waktu Eksekusi</strong>: 163.6 detik secara konsisten</li>
+            <li><strong>Database</strong>: MongoDB In-Memory Server terisolasi (Aman dari modifikasi data riil)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="filterLevel('all', this)">Semua (55)</button>
+        <button class="tab-btn" onclick="filterLevel('Unit Test', this)">Unit Tests (20)</button>
+        <button class="tab-btn" onclick="filterLevel('API Test', this)">API Tests (22)</button>
+        <button class="tab-btn" onclick="filterLevel('E2E Test', this)">E2E Tests (13)</button>
+      </div>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari skenario pengujian..." oninput="handleSearch()">
+      </div>
+    </div>
+
+    <!-- Test Results Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 120px;">Tingkatan</th>
+            <th style="width: 220px;">Modul / File</th>
+            <th>Deskripsi Skenario Pengujian</th>
+            <th style="width: 110px;">Durasi</th>
+            <th style="width: 100px;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="testTableBody">
+          
+            <tr data-level="Unit Test" data-title="jwt token signs and verifies user id and role payload correctly" data-suite="auth.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">auth.test.js</td>
+              <td><strong>JWT token signs and verifies user id and role payload correctly</strong></td>
+              <td class="duration">15 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="requireroles middleware allows user with matching role" data-suite="auth.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">auth.test.js</td>
+              <td><strong>requireRoles middleware allows user with matching role</strong></td>
+              <td class="duration">3 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="requireroles normalizes admin role to manager permission" data-suite="auth.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">auth.test.js</td>
+              <td><strong>requireRoles normalizes admin role to manager permission</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="requireroles rejects unauthorized role (e.g. kasir accessing manager action) with 403" data-suite="auth.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">auth.test.js</td>
+              <td><strong>requireRoles rejects unauthorized role (e.g. kasir accessing manager action) with 403</strong></td>
+              <td class="duration">4 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="password validator requires minimum 8 characters" data-suite="auth.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">auth.test.js</td>
+              <td><strong>Password validator requires minimum 8 characters</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="calculatetotalcartamount calculates correct sum of items" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>calculateTotalCartAmount calculates correct sum of items</strong></td>
+              <td class="duration">5 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="calculatetotalcartamount returns 0 for empty cart" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>calculateTotalCartAmount returns 0 for empty cart</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="calculatetotalcartamount ignores deleted/unknown food items gracefully" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>calculateTotalCartAmount ignores deleted/unknown food items gracefully</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="addtocartlogic increments quantity properly" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>addToCartLogic increments quantity properly</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="removefromcartlogic decrements quantity and removes 0-count items" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>removeFromCartLogic decrements quantity and removes 0-count items</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="cleanupstalecartitems strips out items no longer in menu database" data-suite="cart.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">cart.test.js</td>
+              <td><strong>cleanupStaleCartItems strips out items no longer in menu database</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="merdeka promo code applies 30% discount correctly" data-suite="discount.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">discount.test.js</td>
+              <td><strong>MERDEKA promo code applies 30% discount correctly</strong></td>
+              <td class="duration">4 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="special20 promo code applies 20% discount correctly" data-suite="discount.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">discount.test.js</td>
+              <td><strong>SPECIAL20 promo code applies 20% discount correctly</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="invalid promo code returns 0 discount" data-suite="discount.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">discount.test.js</td>
+              <td><strong>Invalid promo code returns 0 discount</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="case insensitivity handles lowercase input gracefully" data-suite="discount.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">discount.test.js</td>
+              <td><strong>Case insensitivity handles lowercase input gracefully</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="zero or negative total returns 0 discount" data-suite="discount.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">discount.test.js</td>
+              <td><strong>Zero or negative total returns 0 discount</strong></td>
+              <td class="duration">1 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="generateinvoicenumber for manual order matches m-yyyymmdd-xxxx format" data-suite="invoice.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">invoice.test.js</td>
+              <td><strong>generateInvoiceNumber for manual order matches M-YYYYMMDD-XXXX format</strong></td>
+              <td class="duration">7 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="generateinvoicenumber for online order matches e-yyyymmdd-xxxx format" data-suite="invoice.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">invoice.test.js</td>
+              <td><strong>generateInvoiceNumber for online order matches E-YYYYMMDD-XXXX format</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="multiple generated invoices produce unique identifiers" data-suite="invoice.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">invoice.test.js</td>
+              <td><strong>multiple generated invoices produce unique identifiers</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="Unit Test" data-title="parseinvoicenumber rejects malformed invoice strings" data-suite="invoice.test.js">
+              <td><span class="badge-level unit">Unit Test</span></td>
+              <td class="mono">invoice.test.js</td>
+              <td><strong>parseInvoiceNumber rejects malformed invoice strings</strong></td>
+              <td class="duration">2 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-food-01: public get /api/food/list returns empty list when no items" data-suite="food.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">food.api.test.js</td>
+              <td><strong>TC-API-FOOD-01: Public GET /api/food/list returns empty list when no items</strong></td>
+              <td class="duration">593 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-food-02: rbac - kasir role is blocked (403) from adding food (manager-only)" data-suite="food.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">food.api.test.js</td>
+              <td><strong>TC-API-FOOD-02: RBAC - Kasir role is blocked (403) from adding food (Manager-only)</strong></td>
+              <td class="duration">357 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-food-03: rbac - customer role is blocked (403) from removing food" data-suite="food.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">food.api.test.js</td>
+              <td><strong>TC-API-FOOD-03: RBAC - Customer role is blocked (403) from removing food</strong></td>
+              <td class="duration">526 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-food-04: kasir can toggle food availability (tersedia / stok habis)" data-suite="food.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">food.api.test.js</td>
+              <td><strong>TC-API-FOOD-04: Kasir can toggle food availability (Tersedia / Stok Habis)</strong></td>
+              <td class="duration">1196 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-food-05: manager can remove a food item" data-suite="food.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">food.api.test.js</td>
+              <td><strong>TC-API-FOOD-05: Manager can remove a food item</strong></td>
+              <td class="duration">450 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-reg-01: successfully register new customer with valid credentials" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-REG-01: Successfully register new customer with valid credentials</strong></td>
+              <td class="duration">255 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-reg-02: rejects duplicate email registration with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-REG-02: Rejects duplicate email registration with 400</strong></td>
+              <td class="duration">133 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-reg-03: rejects invalid email format with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-REG-03: Rejects invalid email format with 400</strong></td>
+              <td class="duration">15 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-reg-04: rejects password under 8 characters with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-REG-04: Rejects password under 8 characters with 400</strong></td>
+              <td class="duration">34 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-log-01: successfully login with registered customer email and password" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-LOG-01: Successfully login with registered customer email and password</strong></td>
+              <td class="duration">299 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-log-02: rejects wrong password with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-LOG-02: Rejects wrong password with 400</strong></td>
+              <td class="duration">239 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-log-03: rejects non-existent email with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-LOG-03: Rejects non-existent email with 400</strong></td>
+              <td class="duration">148 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-adm-01: manager login returns manager role and token" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-ADM-01: Manager login returns manager role and token</strong></td>
+              <td class="duration">151 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-adm-02: kasir login returns kasir role and token" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-ADM-02: Kasir login returns kasir role and token</strong></td>
+              <td class="duration">118 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-adm-03: rejects wrong admin password with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-ADM-03: Rejects wrong admin password with 400</strong></td>
+              <td class="duration">14 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-adm-04: rejects empty credentials with 400" data-suite="auth.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">auth.api.test.js</td>
+              <td><strong>TC-API-ADM-04: Rejects empty credentials with 400</strong></td>
+              <td class="duration">109 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-01: place manual/cash order returns orderid and m- invoice format" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-01: Place manual/cash order returns orderId and M- invoice format</strong></td>
+              <td class="duration">864 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-02: place order with discount records correct amount and discount" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-02: Place order with discount records correct amount and discount</strong></td>
+              <td class="duration">169 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-03: update order status workflow (pending -> dimasak -> disajikan -> selesai)" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-03: Update order status workflow (Pending -> Dimasak -> Disajikan -> Selesai)</strong></td>
+              <td class="duration">239 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-04: confirm payment updates payment to true" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-04: Confirm payment updates payment to true</strong></td>
+              <td class="duration">176 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-05: fetch user orders returns order history for authenticated customer" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-05: Fetch user orders returns order history for authenticated customer</strong></td>
+              <td class="duration">591 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="API Test" data-title="tc-api-ord-06: kosongkan meja workflow marks all active dining orders for table as selesai" data-suite="order.api.test.js">
+              <td><span class="badge-level api">API Test</span></td>
+              <td class="mono">order.api.test.js</td>
+              <td><strong>TC-API-ORD-06: Kosongkan Meja workflow marks all active dining orders for table as Selesai</strong></td>
+              <td class="duration">2581 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-cust-01: homepage loads successfully with branding and navbar" data-suite="e2e customer: homepage & authentication modal">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Customer: Homepage & Authentication Modal</td>
+              <td><strong>TC-E2E-CUST-01: Homepage loads successfully with branding and navbar</strong></td>
+              <td class="duration">3278 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-cust-02: sign in button opens login popup and close button dismisses it" data-suite="e2e customer: homepage & authentication modal">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Customer: Homepage & Authentication Modal</td>
+              <td><strong>TC-E2E-CUST-02: Sign In button opens Login popup and close button dismisses it</strong></td>
+              <td class="duration">3597 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-cust-03: explore menu section displays categories and food list" data-suite="e2e customer: menu exploration & cart workflow">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Customer: Menu Exploration & Cart Workflow</td>
+              <td><strong>TC-E2E-CUST-03: Explore Menu section displays categories and food list</strong></td>
+              <td class="duration">2608 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-cust-04: cart page displays empty state or checkout fields properly" data-suite="e2e customer: menu exploration & cart workflow">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Customer: Menu Exploration & Cart Workflow</td>
+              <td><strong>TC-E2E-CUST-04: Cart page displays empty state or checkout fields properly</strong></td>
+              <td class="duration">2289 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-cust-05: table number query parameter auto-populates table number" data-suite="e2e customer: menu exploration & cart workflow">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Customer: Menu Exploration & Cart Workflow</td>
+              <td><strong>TC-E2E-CUST-05: Table number query parameter auto-populates table number</strong></td>
+              <td class="duration">2666 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-adm-01: kasir logs in and redirects to orders (pos) page" data-suite="e2e admin: authentication & role-based access control">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Authentication & Role-Based Access Control</td>
+              <td><strong>TC-E2E-ADM-01: Kasir logs in and redirects to Orders (POS) page</strong></td>
+              <td class="duration">6994 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-adm-02: manager logs in and redirects to dashboard page" data-suite="e2e admin: authentication & role-based access control">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Authentication & Role-Based Access Control</td>
+              <td><strong>TC-E2E-ADM-02: Manager logs in and redirects to Dashboard page</strong></td>
+              <td class="duration">5577 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-adm-03: invalid credentials show error toast/message" data-suite="e2e admin: authentication & role-based access control">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Authentication & Role-Based Access Control</td>
+              <td><strong>TC-E2E-ADM-03: Invalid credentials show error toast/message</strong></td>
+              <td class="duration">5710 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-adm-04: kasir role cannot access manager dashboard (rbac check)" data-suite="e2e admin: authentication & role-based access control">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Authentication & Role-Based Access Control</td>
+              <td><strong>TC-E2E-ADM-04: Kasir role cannot access Manager Dashboard (RBAC check)</strong></td>
+              <td class="duration">9710 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-tab-01: tables page loads table cards and status pills" data-suite="e2e admin: tables management & 1-click kosongkan meja">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Tables Management & 1-Click Kosongkan Meja</td>
+              <td><strong>TC-E2E-TAB-01: Tables page loads table cards and status pills</strong></td>
+              <td class="duration">9543 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-tab-02: table capacity stepper adjusts total table count" data-suite="e2e admin: tables management & 1-click kosongkan meja">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Tables Management & 1-Click Kosongkan Meja</td>
+              <td><strong>TC-E2E-TAB-02: Table capacity stepper adjusts total table count</strong></td>
+              <td class="duration">13896 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-tab-03: qr code modal opens and can be closed" data-suite="e2e admin: tables management & 1-click kosongkan meja">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Tables Management & 1-Click Kosongkan Meja</td>
+              <td><strong>TC-E2E-TAB-03: QR Code modal opens and can be closed</strong></td>
+              <td class="duration">13217 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+            <tr data-level="E2E Test" data-title="tc-e2e-tab-04: filter tabs correctly switch table views" data-suite="e2e admin: tables management & 1-click kosongkan meja">
+              <td><span class="badge-level e2e">E2E Test</span></td>
+              <td class="mono">E2E Admin: Tables Management & 1-Click Kosongkan Meja</td>
+              <td><strong>TC-E2E-TAB-04: Filter tabs correctly switch table views</strong></td>
+              <td class="duration">12851 ms</td>
+              <td>
+                <span class="badge-pill-pass">
+                  ✔ PASS
+                </span>
+              </td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </div>
+
+    <footer>
+      <p>Bujang Cafe POS & Restaurant Management System • Automated Test Suite & Manual Black-Box Deliverable</p>
+    </footer>
+  </div>
+
+  <script>
+    let activeLevel = 'all';
+
+    function filterLevel(level, btn) {
+      activeLevel = level;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    function handleSearch() {
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#testTableBody tr');
+
+      rows.forEach(row => {
+        const level = row.getAttribute('data-level');
+        const title = row.getAttribute('data-title');
+        const suite = row.getAttribute('data-suite');
+
+        const matchesLevel = (activeLevel === 'all' || level === activeLevel);
+        const matchesQuery = (!q || title.includes(q) || suite.includes(q));
+
+        row.style.display = (matchesLevel && matchesQuery) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

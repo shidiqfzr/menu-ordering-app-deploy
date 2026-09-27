@@ -293,7 +293,7 @@ const MyOrders = () => {
         return false;
       }
     } else {
-      if (order.status !== "Selesai") {
+      if (order.status !== "Selesai" && order.status !== "Dibatalkan") {
         return false;
       }
     }
@@ -364,7 +364,7 @@ const MyOrders = () => {
             fetchOrders();
           }}
         >
-          Selesai
+          Selesai & Dibatalkan
         </button>
       </div>
 
@@ -450,7 +450,7 @@ const MyOrders = () => {
                 ? `Tidak ditemukan pesanan yang sesuai dengan "${searchQuery}".`
                 : activeTab === "active"
                 ? "Tidak ada pesanan yang sedang berlangsung saat ini."
-                : "Belum ada riwayat pesanan yang selesai."}
+                : "Belum ada riwayat pesanan yang selesai atau dibatalkan."}
             </p>
           </div>
         ) : (
