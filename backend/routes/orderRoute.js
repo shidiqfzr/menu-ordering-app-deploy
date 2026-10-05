@@ -1,17 +1,17 @@
 import express from "express"
 import authMiddleware from "../middleware/auth.js"
-import { 
-  placeOrder, 
-  placeManualOrder, 
-  getOrderById, 
-  verifyOrder, 
-  userOrders, 
-  deleteOrder, 
-  listOrders, 
+import {
+  placeOrder,
+  placeManualOrder,
+  getOrderById,
+  verifyOrder,
+  userOrders,
+  deleteOrder,
+  listOrders,
   getTableOrders,
   getActiveOrderCount,
-  updateStatus, 
-  updatePayment 
+  updateStatus,
+  updatePayment
 } from "../controllers/orderController.js"
 
 const orderRouter = express.Router();
@@ -31,4 +31,4 @@ orderRouter.post("/payment", updatePayment);
 // Wildcard route must be LAST
 orderRouter.get("/:orderId", getOrderById);
 
-export default orderRouter;
+export default orderRouter;

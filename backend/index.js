@@ -97,7 +97,7 @@ app.use("/api/order", orderRouter);
 
 // Root endpoint
 app.get("/", (req, res) => {
-    res.send("API Working");
+  res.send("API Working");
 });
 
 // Start server (when run directly or locally)

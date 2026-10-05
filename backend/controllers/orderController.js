@@ -14,11 +14,11 @@ const placeOrder = async (req, res) => {
     const newOrder = new orderModel({
       userId: req.body.userId,
       items: req.body.items,
-      discount: discount, 
+      discount: discount,
       amount: req.body.amount,
-      tableNumber: req.body.tableNumber, 
-      note: req.body.note,               
-      paymentMethod: req.body.paymentMethod || "Online", 
+      tableNumber: req.body.tableNumber,
+      note: req.body.note,
+      paymentMethod: req.body.paymentMethod || "Online",
     });
 
     // Generate a simplified invoice number based on the order date
@@ -73,13 +73,13 @@ const placeManualOrder = async (req, res) => {
     const newOrder = new orderModel({
       userId: req.body.userId,
       items: req.body.items,
-      discount: discount, 
+      discount: discount,
       amount: req.body.amount,
       paymentMethod: "Tunai",
-      tableNumber: req.body.tableNumber, 
-      note: req.body.note,               
-      status: "Pending", 
-      payment: false, 
+      tableNumber: req.body.tableNumber,
+      note: req.body.note,
+      status: "Pending",
+      payment: false,
     });
 
     // Generate a simplified invoice number based on the order date
@@ -167,7 +167,7 @@ const verifyOrder = async (req, res) => {
   try {
     if (success === "true") {
       const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { payment: true }, { new: true });
-      
+
       // Real-time socket broadcast
       const io = req.app.get("io");
       if (io && updatedOrder) {
@@ -204,11 +204,11 @@ const verifyOrder = async (req, res) => {
 // user orders for frontend
 const userOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({userId: req.body.userId});
-    res.json({success:true, data:orders})
+    const orders = await orderModel.find({ userId: req.body.userId });
+    res.json({ success: true, data: orders })
   } catch (error) {
     console.log(error);
-    res.json({success:false, message:"Error"})
+    res.json({ success: false, message: "Error" })
   }
 }
 
@@ -384,15 +384,15 @@ const listOrders = async (req, res) => {
 
       orders = await cursor;
     }
-    
+
     // Fetch user details only for matched orders (can be skipped for dashboard to boost speed)
     const shouldPopulateUsers = req.query.populateUsers !== 'false';
     const userMap = {};
 
     if (shouldPopulateUsers) {
       const userIds = [...new Set(orders.map(o => o.userId).filter(Boolean))];
-      const users = userIds.length > 0 
-        ? await userModel.find({ _id: { $in: userIds } }, 'name email').lean() 
+      const users = userIds.length > 0
+        ? await userModel.find({ _id: { $in: userIds } }, 'name email').lean()
         : [];
       users.forEach(u => {
         userMap[u._id.toString()] = { name: u.name, email: u.email };
@@ -503,16 +503,16 @@ const updatePayment = async (req, res) => {
   }
 };
 
-export { 
-  placeOrder, 
-  placeManualOrder, 
-  getOrderById, 
-  verifyOrder, 
-  userOrders, 
-  deleteOrder, 
-  listOrders, 
+export {
+  placeOrder,
+  placeManualOrder,
+  getOrderById,
+  verifyOrder,
+  userOrders,
+  deleteOrder,
+  listOrders,
   getTableOrders,
   getActiveOrderCount,
-  updateStatus, 
-  updatePayment 
+  updateStatus,
+  updatePayment
 };

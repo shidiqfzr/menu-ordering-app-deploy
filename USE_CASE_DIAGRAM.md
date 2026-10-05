@@ -114,7 +114,7 @@ flowchart LR
     UC06 -. "«extend»" .-> UC05
     UC07 -. "«include»" .-> UC08
     UC07 -. "«include»" .-> UC09
-    UC09 -. "«include»" .-> UC10
+    UC10 -. "«extend»" .-> UC07
     UC10 --- StripeSystem
 
     %% ──────────────────────────────────────────────────────────
@@ -222,9 +222,10 @@ flowchart LR
 #### UC-07: Melakukan Pemesanan (*Checkout Order*)
 - **Aktor Utama**: Pelanggan
 - **Tujuan**: Mengirimkan pesanan resmi ke dapur/kasir restoran.
-- **Relasi Include**:
+- **Relasi**:
   - `<<include>>` **UC-08: Menentukan Nomor Meja & Catatan**: Sistem mewajibkan pengisian nomor meja dan catatan khusus (misal: "Jangan pedas").
   - `<<include>>` **UC-09: Memilih Metode Pembayaran**: Pelanggan memilih "Pembayaran Tunai" atau "Pembayaran Elektronik".
+  - `<<extend>>` **UC-10: Memproses Pembayaran Digital**: Pelanggan dialihkan ke gateway pembayaran Stripe hanya jika memilih metode pembayaran elektronik.
 - **Skenario Utama (Tunai di Kasir)**:
   1. Pelanggan memilih opsi Tunai dan menekan "Buat Pesanan".
   2. Sistem membuat dokumen order baru dengan status `"Pending"` dan nomor invoice otomatis berawalan `M-YYYYMMDD-XXXX`.

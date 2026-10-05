@@ -44,13 +44,7 @@ const OrderConfirmation = () => {
       const fetchedOrder = response.data?.order;
       if (fetchedOrder) {
         setOrder(fetchedOrder);
-        if (
-          fetchedOrder.status === "Diproses" ||
-          fetchedOrder.status === "Disajikan" ||
-          fetchedOrder.status === "Selesai"
-        ) {
-          navigate("/myorders");
-        }
+        // Redirect removed based on feedback (BUG-C-04 fixed)
       }
     } catch (err) {
       console.error("Failed to load order details:", err);
@@ -81,13 +75,7 @@ const OrderConfirmation = () => {
               : prev
           );
 
-          if (
-            payload.status === "Diproses" ||
-            payload.status === "Disajikan" ||
-            payload.status === "Selesai"
-          ) {
-            navigate("/myorders");
-          }
+          // Redirect removed based on feedback (BUG-C-04 fixed)
         }
       };
 
